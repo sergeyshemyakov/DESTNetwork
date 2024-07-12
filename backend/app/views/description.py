@@ -17,9 +17,14 @@ def get_description(description_hash: str, session=Depends(get_db)):
 
 @router.post("/descriptions")
 def save_description(req: description.DescriptionRequest, session=Depends(get_db)) -> description.Description:
+    description_hash = hashlib.sha256(req.content.encode()).hexdigest()
+    instance = session.query(models.Description).get(description_hash)
+    if instance:
+        return instance
+    
     description = models.Description(
         content=req.content,
-        hash=hashlib.sha256(req.content)
+        hash=description_hash
     )
     session.add(description)
     session.commit()
