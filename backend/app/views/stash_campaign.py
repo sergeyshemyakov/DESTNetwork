@@ -34,7 +34,7 @@ def get_campaign(description_hash: str, session=Depends(get_db)):
     }
 
 
-@router.post("/stash-campaigns/", response_model=List[stash_campaign.StashCampaign])
+@router.get("/stash-campaigns/", response_model=List[stash_campaign.StashCampaign])
 def list_campaigns(session=Depends(get_db)):
     return [
         {
