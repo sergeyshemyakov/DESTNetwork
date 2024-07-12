@@ -1,56 +1,64 @@
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
-
+import { HeroSvg } from "@/components/hero-svg";
+import { Button } from "@nextui-org/button";
+import { Block } from "@/components/Block";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
 
 export default function Home() {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-lg text-center justify-center">
-        <h1 className={title()}>Make&nbsp;</h1>
-        <h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
-        <br />
-        <h1 className={title()}>
-          websites regardless of your design experience.
-        </h1>
-        <h2 className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </h2>
+    <section className="flex flex-col items-center justify-start gap-16 md:gap-24 py-8">
+      <div className="flex flex-row items-center">
+        <div>
+          <h1 className="header-text text-5xl max-w-xl mb-6">
+            Welcome to Dest 👋 <br />
+            Decentralized Stashing Network
+          </h1>
+          <p className="mb-8 text-gray-500 text-lg">
+            Secure resources and build community aid by participating in our
+            innovative stash campaigns, strengthening your community's
+            resilience and preparedness.
+          </p>
+          <Button color="primary" variant="shadow" radius="full" size="lg">
+            Exprole campaigns
+          </Button>
+        </div>
+        <div>
+          <HeroSvg />
+        </div>
+      </div>
+      <div className="flex flex-col justify-center">
+        <div className="flex flex-row justify-center">
+          <p className="text-xl text-gray-500 text-center max-w-[600]">
+            Dest is a decentralized platform that encourages individuals to
+            securely stash resources, fostering community aid and resilience.
+          </p>
+        </div>
+        <div className="flex gap-8 mt-8">
+          {siteConfig.mainCards.map((item) => (
+            <Card className="max-w-[340px] p-1 pb-4" isBlurred>
+              <CardHeader className="justify-between">
+                <div className="flex gap-5">
+                  <div className="flex flex-col gap-1 items-start justify-center">
+                    <h4 className="text-xl font-bold header-text">
+                      {item.title}
+                    </h4>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardBody className="px-3 py-0 text-small text-default-400">
+                <p className="text-gray-500">{item.text}</p>
+              </CardBody>
+            </Card>
+          ))}
+        </div>
       </div>
 
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div>
+      <Block
+        title="Stash and Earn Rewards"
+        subtitle="Each stashing activity offers unique rewards based on size and community need."
+      >
+        conent
+      </Block>
     </section>
   );
 }
