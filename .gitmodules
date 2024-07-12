@@ -1,0 +1,6 @@
+[submodule "lib/world-id-starter-hardhat"]
+	path = lib/world-id-starter-hardhat
+	url = https://github.com/worldcoin/world-id-starter-hardhat
+[submodule "contracts/destnet/lib/world-id-starter-hardhat"]
+	path = contracts/destnet/lib/world-id-starter-hardhat
+	url = https://github.com/worldcoin/world-id-starter-hardhat
