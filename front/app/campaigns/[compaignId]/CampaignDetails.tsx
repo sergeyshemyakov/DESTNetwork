@@ -15,7 +15,6 @@ import {
 import CustomFileInput from "../components/CustomInput";
 import { Map, MapRef, Marker } from "react-map-gl";
 import { FC, useEffect, useRef, useState } from "react";
-import axios from "axios";
 import Pin from "../components/Pin";
 import { categories } from "@/config/categories";
 import { Block } from "@/components/Block";
@@ -111,7 +110,7 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container">
       <Block
         hasMaxWidth={false}
         title={
@@ -162,7 +161,7 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
             <div className="max-w-[360px] max-h-[360px] rounded-lg overflow-hidden">
               <Map
                 ref={mapRef}
-                mapboxAccessToken="pk.eyJ1IjoianVzdGVyZW1hIiwiYSI6ImNseWFqd3hhdDA5ZjIyaXIydDRta3V5aHUifQ.cfW4FtH7DCJ4tzdQluhAew"
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAP_BOX_KEY}
                 style={{ width: 360, height: 360 }}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
               >
@@ -197,6 +196,7 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
                   <CustomFileInput onFileChange={handlePhotoChange} />
                 </div>
                 <Textarea
+                  labelPlacement="outside"
                   variant="bordered"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}

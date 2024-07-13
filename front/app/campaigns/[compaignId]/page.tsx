@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import CampaignDetails from "./CampaignDetails";
 import { API } from "@/config/api";
+import { IsBrowser } from "@dynamic-labs/sdk-react-core";
 
 interface CampaignPageProps {
   params: { compaignId: string };
@@ -13,7 +14,12 @@ const CampaignPage = async ({ params }: CampaignPageProps) => {
   if (!campaign) {
     notFound();
   }
-  return <CampaignDetails campaign={campaign} />;
+
+  return (
+    <IsBrowser>
+      <CampaignDetails campaign={campaign} />
+    </IsBrowser>
+  );
 };
 
 export default CampaignPage;
