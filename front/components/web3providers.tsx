@@ -5,6 +5,7 @@ import { baseSepolia, mainnet } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { FC, PropsWithChildren } from "react";
+import { useTheme } from "next-themes";
 
 const config = createConfig(
   getDefaultConfig({
@@ -33,10 +34,13 @@ const config = createConfig(
 const queryClient = new QueryClient();
 
 export const Web3Providers: FC<PropsWithChildren> = ({ children }) => {
+  const { theme } = useTheme();
+
+  const mode = theme === "light" ? "light" : "dark";
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>{children}</ConnectKitProvider>
+        <ConnectKitProvider mode={mode}>{children}</ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

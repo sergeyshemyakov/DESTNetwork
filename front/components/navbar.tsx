@@ -20,12 +20,16 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, Logo } from "@/components/icons";
 import { VerifyWallet } from "./VerifyWallet";
 import { ConnectKitButton } from "connectkit";
+import { useTheme } from "next-themes";
 
 export const Navbar = () => {
+  const { theme } = useTheme();
+
+  const mode = theme === "light" ? "light" : "dark";
   const connectButton = (
     <div className="flex gap-2">
       <VerifyWallet />
-      <ConnectKitButton />
+      <ConnectKitButton mode={mode} />
     </div>
   );
 
