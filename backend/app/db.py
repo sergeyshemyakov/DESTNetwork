@@ -6,3 +6,5 @@ from sqlalchemy.orm import sessionmaker
 
 engine = create_engine(os.environ.get("SQLALCHEMY_DATABASE_URL"))
 SessionLocal = sessionmaker(bind=engine)
+
+empty_hash = "0x0000000000000000000000000000000000000000000000000000000000000000"

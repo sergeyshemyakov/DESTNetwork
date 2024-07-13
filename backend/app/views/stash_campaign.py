@@ -11,70 +11,51 @@ router = APIRouter()
 
 
 @router.get("/stash-campaigns/{campaign_id}", response_model=stash_campaign.StashCampaign)
-def get_campaign(description_hash: str, session=Depends(get_db)):
-    return {
-        "campaign_id": "cmp123",
-        "description": "A campaign to promote environmental awareness.",
-        "campaign_type": 1,
-        "campaign_creator": "creator001",
-        "reward": 500,
-        "reward_token": "rewardToken123",
-        "token_symbol": "ETH",
-        "blockchain": "ethereum",
-        "max_submissions": 1000,
-        "remained_submissions": 800,
-        "top_left": {
-            "lat": 40.712776,
-            "long": -74.005974
-        },
-        "bottom_right": {
-            "lat": 34.052235,
-            "long": -118.243683
-        }
-    }
+def get_campaign(campaign_id: str, session=Depends(get_db)):
+    item: models.StashCampaign = session.query(models.StashCampaign)\
+        .filter(campaign_id=campaign_id).first()
+    description: models.Description = session.query(models.Description).get(item.description_hash)
+    return stash_campaign.StashCampaign(
+        campaign_id=item.campaign_id,
+        description=description.content,
+        campaign_type=item.campaign_type,
+        campaign_creator=item.campaign_creator,
+        reward=item.reward,
+        reward_token=item.reward_token,
+        token_symbol=item.token_symbol,
+        blockchain=item.blockchain,
+        max_submissions=item.max_submissions,
+        remained_submissions=item.remained_submissions,
+        top_left=stash_campaign.Point(item.top_left_lat, item.top_left_long),
+        bottom_right=stash_campaign.Point(item.bottom_right_lat, item.bottom_right_long)
+    )
 
 
 @router.get("/stash-campaigns/", response_model=List[stash_campaign.StashCampaign])
-def list_campaigns(session=Depends(get_db)):
+def list_campaigns(blockchain: str | None = None, session=Depends(get_db)):
+    q = session.query(models.StashCampaign, models.Description).join(models.Description, models.StashCampaign.description_hash==models.Description.hash)
+    if blockchain:
+        q = q.filter(models.StashCampaign.blockchain==blockchain)    
     return [
-        {
-            "campaign_id": "cmp123",
-            "description": "A campaign to promote environmental awareness.",
-            "campaign_type": 1,
-            "campaign_creator": "creator001",
-            "reward": 500,
-            "reward_token": "rewardToken123",
-            "token_symbol": "ETH",
-            "blockchain": "ethereum",
-            "max_submissions": 1000,
-            "remained_submissions": 800,
-            "top_left": {
-            "lat": 40.712776,
-            "long": -74.005974
-            },
-            "bottom_right": {
-            "lat": 34.052235,
-            "long": -118.243683
-            }
-        },
-        {
-            "campaign_id": "cmp456",
-            "description": "A campaign to support local businesses.",
-            "campaign_type": 2,
-            "campaign_creator": "creator002",
-            "reward": 1000,
-            "reward_token": "rewardToken456",
-            "token_symbol": "BTC",
-            "blockchain": "bitcoin",
-            "max_submissions": 500,
-            "remained_submissions": 450,
-            "top_left": {
-                "lat": 51.507351,
-                "long": -0.127758
-            },
-            "bottom_right": {
-                "lat": 48.856613,
-                "long": 2.352222
-            }
-        }
+        stash_campaign.StashCampaign(
+            campaign_id=row.StashCampaign.campaign_id,
+            description=row.Description.content,
+            campaign_type=row.StashCampaign.campaign_type,
+            campaign_creator=row.StashCampaign.campaign_creator,
+            reward=row.StashCampaign.reward,
+            reward_token=row.StashCampaign.reward_token,
+            token_symbol=row.StashCampaign.token_symbol,
+            blockchain=row.StashCampaign.blockchain,
+            max_submissions=row.StashCampaign.max_submissions,
+            remained_submissions=row.StashCampaign.remained_submissions,
+            top_left=stash_campaign.Point(row.StashCampaign.top_left_lat, row.StashCampaign.top_left_long),
+            bottom_right=stash_campaign.Point(row.StashCampaign.bottom_right_lat, row.StashCampaign.bottom_right_long)
+        )
+        for row in q.all()
     ]
+
+
+@router.get("/blockchains", response_model=List[str])
+def list_blockchains():
+    return []
+

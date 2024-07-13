@@ -28,14 +28,18 @@ export default function Home() {
       </div>
       <div className="flex flex-col justify-center">
         <div className="flex flex-row justify-center">
-          <p className="text-xl text-gray-500 text-center max-w-[600]">
+          <p className="text-xl text-gray-500 text-center max-w-[600px]">
             Dest is a decentralized platform that encourages individuals to
             securely stash resources, fostering community aid and resilience.
           </p>
         </div>
         <div className="flex gap-8 mt-8">
-          {siteConfig.mainCards.map((item) => (
-            <Card className="max-w-[340px] p-1 pb-4" isBlurred>
+          {siteConfig.mainCards.map((item, index) => (
+            <Card
+              key={item.text + index}
+              className="max-w-[340px] p-1 pb-4"
+              isBlurred
+            >
               <CardHeader className="justify-between">
                 <div className="flex gap-5">
                   <div className="flex flex-col gap-1 items-start justify-center">
@@ -57,7 +61,17 @@ export default function Home() {
         title="Stash and Earn Rewards"
         subtitle="Each stashing activity offers unique rewards based on size and community need."
       >
-        conent
+        <ol>
+          <li>1. Gather the required resources.</li>
+          <li>2. Take a clear photo of the resources.</li>
+          <li> 3. Enable location services on your device.</li>
+          <li>
+            4. Submit the photo and geolocation through the submission form.
+          </li>
+          <li>
+            5. Submissions by users verified with WorldID cannot be disputed."
+          </li>
+        </ol>
       </Block>
     </section>
   );

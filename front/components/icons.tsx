@@ -22,16 +22,16 @@ export const Logo: React.FC<IconSvgProps> = ({
       viewBox="0 0 644 230"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_42_146)">
+      <g clipPath="url(#clip0_42_146)">
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M0 79.1532V0H55.8409V79.1509V134.994L0 79.1532Z"
           fill="#20C997"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M115 230H0V229.998L55.8409 174.157V174.159H115C147.673 174.159 174.159 147.673 174.159 115C174.159 82.3275 147.673 55.8409 115 55.8409H80.2801V0H115C178.513 0 230 51.4872 230 115C230 136.635 224.025 156.875 213.637 174.159C203.916 190.331 190.331 203.916 174.159 213.637C165.596 218.783 156.308 222.847 146.484 225.637C136.478 228.479 125.917 230 115 230Z"
           fill={fillColor}
         />
