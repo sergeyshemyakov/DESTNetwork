@@ -1,4 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
+from enum import Enum
+
+class SubmissionState(Enum):
+    TO_VERIFY = "To verify"
+    DISPUTED = "Disputed"
+    FINALIZED = "Finalized"
+    RESOLVED = "Resolved"
 
 
 class Submission(BaseModel):
@@ -8,5 +15,17 @@ class Submission(BaseModel):
     photo_url: str
     description: str
     status: int
+    resolved: bool
     lat: float
     long: float
+    state: SubmissionState
+    
+    @staticmethod
+    def calc_state(to_verify: bool, status: int, resolved: bool) -> str:
+        if to_verify:
+            return SubmissionState.TO_VERIFY
+        if resolved:
+            return SubmissionState.RESOLVED
+        if not to_verify and status == 0:
+            return SubmissionState.DISPUTED
+        return SubmissionState.FINALIZED

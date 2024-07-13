@@ -11,11 +11,17 @@ router = APIRouter()
 
 
 @router.get("/submissions/", response_model=List[submission.Submission])
-def list_submissions(submission_status: int | None = None, 
+def list_submissions(campaign_id: str,
+                     user_address: str,
+                     submission_status: int | None = None, 
                      submission_creator_address: str | None = None,
                      session=Depends(get_db)):
     items = session.query(models.Submission, models.Description)\
-        .join(models.Description, models.Submission.description_hash==models.Description.hash)
+        .join(models.Description, models.Submission.description_hash==models.Description.hash)\
+        .filter(models.Submission.campaign_id==campaign_id)
+    submissions_to_verify = [
+        x.submission_id for x in session.query(models.VerificationRequest).filter(models.VerificationRequest.verifier_id==user_address).all()] 
+    print(submissions_to_verify)
     if submission_status:
         items = items.filter(models.Submission.status==submission_status)
     if submission_creator_address:
@@ -28,7 +34,13 @@ def list_submissions(submission_status: int | None = None,
         photo_url=f"/api/photos/{item.Submission.photo_hash}",
         status=item.Submission.status,
         lat=item.Submission.lat,
-        long=item.Submission.long
+        long=item.Submission.long,
+        resolved=item.Submission.resolved or False,
+        state=submission.Submission.calc_state(
+            item.Submission.submission_id in submissions_to_verify,
+            item.Submission.status,
+            item.Submission.resolved
+        )
     ) for item in items.all()]
 
 
