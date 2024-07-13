@@ -120,11 +120,11 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
                 alt="category icon"
                 height={60}
                 radius="sm"
-                src="/med.png"
+                src={categories[campaign.campaign_type].icon}
                 width={60}
               />
               <h2 className="header-text text-6xl">
-                {categories[campaign.campaign_type]}
+                {categories[campaign.campaign_type].name}
               </h2>
               <NavLink href={`/campaigns/${campaign.campaign_id}/submissions`}>
                 <Button>View campaign submissions</Button>
