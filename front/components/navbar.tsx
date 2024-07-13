@@ -16,10 +16,14 @@ import clsx from "clsx";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, Logo } from "@/components/icons";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget, IsBrowser } from "@dynamic-labs/sdk-react-core";
 
 export const Navbar = () => {
-  const connectButton = <DynamicWidget />;
+  const connectButton = (
+    <IsBrowser>
+      <DynamicWidget />
+    </IsBrowser>
+  );
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
