@@ -1,47 +1,131 @@
 "use client";
+
 import { Button } from "@nextui-org/button";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/react";
+import { BiLoaderAlt } from "react-icons/bi";
+import { ISuccessResult } from "@worldcoin/idkit";
+import { FaCheckCircle } from "react-icons/fa";
+import { BaseError, decodeAbiParameters, parseAbiParameters } from "viem";
 import {
-  IDKitWidget,
-  ISuccessResult,
-  VerificationLevel,
-} from "@worldcoin/idkit";
-import { useWalletClient } from "wagmi";
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import { useEffect, useState } from "react";
+import ConfettiExplosion from "react-confetti-explosion";
+import { verifyAbi } from "@/config/abi";
+import { IsWorldIdVerified } from "./isWorldIdVerified";
 
 export const VerifyWallet = () => {
-  const wallet = useWalletClient();
+  const account = useAccount();
+  const [isConnected, setIsConnected] = useState(false);
 
-  // TODO: Calls your implemented server route
-  const verifyProof = async (result: ISuccessResult) => {
-    console.log(result);
+  const { data: hash, error, writeContractAsync } = useWriteContract();
+
+  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
+  const [isDone, setIsDone] = useState<"none" | "progress" | "completed">(
+    "none"
+  );
+
+  const onSuccess = async (result: ISuccessResult) => {
+    if (!account.address) return;
+
+    setIsDone("progress");
+
+    try {
+      await writeContractAsync({
+        abi: verifyAbi,
+        account: account.address,
+        address: `0x2F7B383653f907a5f1D1c3ecF98201baa792952F`,
+        functionName: `addWorldIDPoH`,
+        args: [
+          account.address,
+          BigInt(result.merkle_root),
+          BigInt(result.nullifier_hash),
+          decodeAbiParameters(
+            parseAbiParameters(`uint256[8]`),
+            result!.proof as `0x${string}`
+          )[0],
+        ],
+      });
+
+      setIsDone("completed");
+    } catch (e) {
+      throw new Error((e as BaseError).shortMessage);
+    }
   };
 
-  // TODO: Functionality after verifying
-  const onSuccess = () => {
-    console.log("Success");
-  };
-
-  // ...
+  useEffect(() => {
+    setIsConnected(account.isConnected);
+  }, [account.isConnected]);
 
   return (
-    <IDKitWidget
-      app_id="app_staging_4159351d39ed40966d0dc48bb0554ae5"
-      action="verify-wallet"
-      // On-chain only accepts Orb verifications
-      verification_level={VerificationLevel.Orb}
-      handleVerify={verifyProof}
-      onSuccess={onSuccess}
-    >
-      {({ open }) => (
-        <div className="flex items-center">
-          <Button
-            isDisabled={!wallet.isSuccess}
-            disabled={!wallet.isSuccess}
-            onClick={open}
-          >
-            Verify with World ID
-          </Button>
-        </div>
+    <>
+      {isConnected && account.address && (
+        <IsWorldIdVerified address={account.address} onSuccess={onSuccess} />
       )}
-    </IDKitWidget>
+      <Modal size="md" isOpen={isDone === "progress"}>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader>
+                <h3 className="header-text text-xl flex gap-2 items-center">
+                  Verification in progress{" "}
+                  <span className="animate-spin text-primary">
+                    <BiLoaderAlt />
+                  </span>
+                </h3>
+              </ModalHeader>
+              <ModalBody className="pb-4">
+                {error ? (
+                  <p>Error: {(error as BaseError).message}</p>
+                ) : (
+                  <>
+                    <div className="flex gap-2 items-center">
+                      <span className="text-success">
+                        <FaCheckCircle />
+                      </span>
+
+                      <p className="text-lg">Transaction started</p>
+                    </div>
+
+                    <div className="flex gap-2 items-center">
+                      <span className={hash ? "text-success" : "animate-spin"}>
+                        {hash ? <FaCheckCircle /> : <BiLoaderAlt />}
+                      </span>
+                      <p className="text-lg">
+                        {!hash
+                          ? "Getting ransaction hash..."
+                          : `Transaction Hash ${hash}`}
+                      </p>
+                    </div>
+
+                    {hash && (
+                      <div className="flex gap-2 items-center">
+                        <span
+                          className={
+                            isConfirmed ? "text-success" : "animate-spin"
+                          }
+                        >
+                          {isConfirmed ? <FaCheckCircle /> : <BiLoaderAlt />}
+                        </span>
+                        <p className="text-lg">
+                          {isConfirmed
+                            ? "Transaction confirmed"
+                            : "Waiting for confirmation..."}
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      {isDone && <ConfettiExplosion />}
+    </>
   );
 };

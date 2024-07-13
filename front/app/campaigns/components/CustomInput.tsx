@@ -40,9 +40,9 @@ const CustomFileInput: React.FC<CustomFileInputProps> = ({ onFileChange }) => {
           )}
 
           <Button
-            onClick={handleButtonClick}
             variant="bordered"
             color="primary"
+            onClick={handleButtonClick}
           >
             {fileName ? "Change file" : "Browse files"}
           </Button>
