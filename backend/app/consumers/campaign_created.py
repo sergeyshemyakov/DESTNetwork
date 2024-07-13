@@ -63,7 +63,7 @@ class CampaignCreatedEventConsumer(BaseConsumer):
             campaign_id=campaign_address,
             description_hash=campaign_contract.functions.descriptionHash().call().hex(),
             campaign_creator=campaign_contract.functions.campaignCreator().call(),
-            reward=campaign_contract.functions.reward().call(),
+            reward=str(campaign_contract.functions.reward().call()),
             reward_token=reward_token,
             blockchain=self.blockchain_name,
             campaign_type=campaign_contract.functions.category().call(),

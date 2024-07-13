@@ -9,7 +9,7 @@ class StashCampaign(Base):
     campaign_id = Column(String)
     description_hash = Column(String)
     campaign_creator = Column(String)
-    reward = Column(BigInteger)
+    reward = Column(String)
     reward_token = Column(String)
     blockchain = Column(String)
     token_symbol = Column(String)

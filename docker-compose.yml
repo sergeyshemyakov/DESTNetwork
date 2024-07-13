@@ -22,6 +22,8 @@ services:
       - db
   worker:
     build: backend
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432
     command: bash -c "python -m app.consumers.main_consumer"
     volumes:
       - ./backend:/main

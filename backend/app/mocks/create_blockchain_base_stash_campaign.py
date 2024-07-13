@@ -11,7 +11,7 @@ def create_stash_campaign(campaign_address, reward_token, blockchain_name):
         campaign_id=campaign_address,
         description_hash="fd87ed11e357c1105af46476db6207eed8d3d9716705bfd2e702554c0b65e3f1",
         campaign_creator="0xabadc4402C14844431fC7521613b6922c7bdde80",
-        reward=10*(10**18),
+        reward="10000000000000000000",
         reward_token=reward_token,
         blockchain=blockchain_name,
         campaign_type=0,
