@@ -8,6 +8,7 @@ contract StashCampaign {
     uint256 immutable MIN_SUBMISSION_DURATION = 120; // should be 7776000 = 3 months for non-hack version
     uint8 immutable VERIFICATION_ROUND_SIZE = 3; // could be bigger for non-hack version
     uint256 immutable DISPUTE_WINDOW = 60; // should be 1209600 = 2 weeks for non-hack version
+    uint256 MAX_INT = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
 
     enum SubmissionStatus {
         Disputed,
@@ -83,6 +84,20 @@ contract StashCampaign {
     address[] public submissionIds;
     mapping(address => Submission) public submissions;
     ProofOfHumanity public immutable proofOfHumanity;
+
+    modifier submissionExists(address submissionId) {
+        require(submissions[submissionId].minResolveTimestamp != 0, "Submission does not exist");
+        _;
+    }
+
+    modifier submissionFinal(address submissionId) {
+        require(
+            submissions[submissionId].status == SubmissionStatus.Accepted
+                || submissions[submissionId].status == SubmissionStatus.Rejected,
+            "Submission is not finalized"
+        );
+        _;
+    }
 
     constructor(
         uint256 _campaignExpirationTimestamp,
@@ -229,13 +244,11 @@ contract StashCampaign {
 
     // Dispute finalized submission. A disputor deposit should be approved by the user
     // before opening a dispute, it will be transferred to the stash campaign.
-    function dispute(address submissionId, bytes32 disputorNotesHash) public {
-        require(submissions[submissionId].minResolveTimestamp != 0, "Submission does not exist");
-        require(
-            submissions[submissionId].status == SubmissionStatus.Accepted
-                || submissions[submissionId].status == SubmissionStatus.Rejected,
-            "Can dispute only finalized submissions"
-        );
+    function dispute(address submissionId, bytes32 disputorNotesHash)
+        public
+        submissionExists(submissionId)
+        submissionFinal(submissionId)
+    {
         require(
             !proofOfHumanity.checkPoH(submissionId) || submissionId == msg.sender,
             "Can not dispute users with proved proof of humanity"
@@ -250,5 +263,136 @@ contract StashCampaign {
         submissions[submissionId].votesOnThis.push(Vote(msg.sender, opinion));
         _requestVerificaiton(submissionId, VERIFICATION_ROUND_SIZE - 1);
         emit Disputed(submissionId, msg.sender);
+    }
+
+    // Function fot msg.sender to vote on submission Id. Can only be called if msg.sender
+    // was requested to vote on submission Id and if they have not voted previously.
+    function vote(address submissionId, VoteOpinion opinion)
+        public
+        submissionExists(submissionId)
+        submissionExists(msg.sender)
+    {
+        require(opinion == VoteOpinion.Yes || opinion == VoteOpinion.No, "Can vote only Yes or No");
+
+        // check that msg.sender was requiered to vote on submission and has not voted yet
+        uint256 reqVoteIndex = MAX_INT;
+        for (uint256 i = 0; i < submissions[msg.sender].requestedVotes.length; i++) {
+            if (submissions[msg.sender].requestedVotes[i].id == submissionId) {
+                reqVoteIndex = i;
+                continue;
+            }
+        }
+        require(reqVoteIndex != MAX_INT, "Can only vote on submissions where the vote was requested");
+        require(
+            submissions[msg.sender].requestedVotes[reqVoteIndex].voted = false, "Can not vote twice on a submission"
+        );
+
+        // set that msg.sender has voted
+        submissions[msg.sender].requestedVotes[reqVoteIndex].voted = true;
+        // add the vote decision to the submission
+        submissions[submissionId].votesOnThis.push(Vote(msg.sender, opinion));
+        emit Voted(submissionId, msg.sender);
+
+        // if the last voter in round, proceed with the submission
+        if (submissions[submissionId].votesOnThis.length % VERIFICATION_ROUND_SIZE == 0) {
+            _resolveRound(submissionId);
+        }
+    }
+
+    // Function to resolve a submission, i.e. to make it impossible to interact with it anymore
+    // and manage all related rewards and penalties
+    function resolve(address submissionId) public submissionExists(submissionId) submissionFinal(submissionId) {
+        require(
+            block.timestamp >= submissions[submissionId].minResolveTimestamp, "Min resolve timestamp is not reached"
+        );
+        // check that all required votes are cast
+        for (uint256 i = 0; i < submissions[submissionId].requestedVotes.length; i++) {
+            require(
+                submissions[submissionId].requestedVotes[i].voted,
+                "Can resolve submission only after all requered votes are cast"
+            );
+        }
+
+        // take all penalties and share among all correct voters
+        if (submissions[submissionId].status == SubmissionStatus.Accepted) {
+            rewardToken.transfer(submissionId, submissions[submissionId].lockedReward);
+            submissions[submissionId].lockedReward = 0;
+            uint256 penalty = 0;
+            uint256 yesVotersCount = 0;
+            // deduce penalties from no voters
+            for (uint256 i = 0; i < submissions[submissionId].votesOnThis.length; i++) {
+                Vote memory _vote = submissions[submissionId].votesOnThis[i];
+                // incorrect disputors lose full deposit
+                if (_vote.vote == VoteOpinion.DisputorNo) {
+                    penalty += disputDepositAmount;
+                }
+                // incorrect voters lose half of locked rewards
+                else if (_vote.vote == VoteOpinion.No) {
+                    penalty = submissions[_vote.verifier].lockedReward / 2;
+                    submissions[_vote.verifier].lockedReward /= 2;
+                } else {
+                    yesVotersCount++;
+                }
+            }
+            // pay out rewards to yes voters
+            uint256 share = penalty / yesVotersCount;
+            for (uint256 i = 0; i < submissions[submissionId].votesOnThis.length; i++) {
+                Vote memory _vote = submissions[submissionId].votesOnThis[i];
+                // correct disputor receives deposit + their share of penalty tokens
+                if (_vote.vote == VoteOpinion.DisputorYes) {
+                    rewardToken.transfer(_vote.verifier, share + disputDepositAmount);
+                }
+                // correct voter receives their share of penalty. It is transferred
+                // as locked reward or transferred directly, depending on whether the
+                // voter already resolved their submission
+                if (_vote.vote == VoteOpinion.Yes) {
+                    if (submissions[_vote.verifier].lockedReward == 0) {
+                        rewardToken.transfer(_vote.verifier, share);
+                    } else {
+                        submissions[_vote.verifier].lockedReward += share;
+                    }
+                }
+            }
+        } else {
+            // submitter loses full reward
+            uint256 penalty = submissions[submissionId].lockedReward;
+            uint256 noVotersCount = 0;
+            // deduce penalties from yes voters
+            for (uint256 i = 0; i < submissions[submissionId].votesOnThis.length; i++) {
+                Vote memory _vote = submissions[submissionId].votesOnThis[i];
+                // incorrect disputors lose full deposit
+                if (_vote.vote == VoteOpinion.DisputorYes) {
+                    penalty += disputDepositAmount;
+                }
+                // incorrect voters lose half of locked rewards
+                else if (_vote.vote == VoteOpinion.Yes) {
+                    penalty = submissions[_vote.verifier].lockedReward / 2;
+                    submissions[_vote.verifier].lockedReward /= 2;
+                } else {
+                    noVotersCount++;
+                }
+            }
+            // pay out rewards to no voters
+            uint256 share = penalty / noVotersCount;
+            for (uint256 i = 0; i < submissions[submissionId].votesOnThis.length; i++) {
+                Vote memory _vote = submissions[submissionId].votesOnThis[i];
+                // correct disputor receives deposit + their share of penalty tokens
+                if (_vote.vote == VoteOpinion.DisputorNo) {
+                    rewardToken.transfer(_vote.verifier, share + disputDepositAmount);
+                }
+                // correct voter receives their share of penalty. It is transferred
+                // as locked reward or directly, depending on whether the
+                // voter already resolved their submission
+                if (_vote.vote == VoteOpinion.No) {
+                    if (submissions[_vote.verifier].lockedReward == 0) {
+                        rewardToken.transfer(_vote.verifier, share);
+                    } else {
+                        submissions[_vote.verifier].lockedReward += share;
+                    }
+                }
+            }
+        }
+        submissions[submissionId].status = SubmissionStatus.Resolved;
+        emit Resolved(submissionId);
     }
 }
