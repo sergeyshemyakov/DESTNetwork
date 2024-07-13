@@ -20,6 +20,13 @@ services:
       - "8000:8000"
     depends_on:
       - db
+  worker:
+    build: backend
+    command: bash -c "python -m app.consumers.main_consumer"
+    volumes:
+      - ./backend:/main
+    depends_on:
+      - db
 
   pgadmin:
     container_name: pgadmin
