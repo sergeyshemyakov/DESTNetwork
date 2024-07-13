@@ -29,7 +29,7 @@ def save_photo(image: UploadFile, session=Depends(get_db)):
     image_hash = hashlib.sha256(image_content).hexdigest()
     instance = session.query(models.Photo).get(image_hash)
     if instance:
-        raise HTTPException(status_code=400, detail="Image already exists")
+        return {"success": True, "photo_hash": image_hash, "details": "photo_already_exists"}
     
     photo = models.Photo(
         image=image_content,
