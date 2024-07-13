@@ -1,4 +1,5 @@
 "use client";
+
 import { categories } from "@/config/categories";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Button, Divider, Image, Progress } from "@nextui-org/react";
