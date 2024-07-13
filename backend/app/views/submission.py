@@ -12,21 +12,21 @@ router = APIRouter()
 
 @router.get("/submissions/", response_model=List[submission.Submission])
 def list_submissions(submission_status: int | None = None, 
-                     submission_id: str | None = None,
+                     submission_creator_address: str | None = None,
                      session=Depends(get_db)):
     items = session.query(models.Submission, models.Description)\
         .join(models.Description, models.Submission.description_hash==models.Description.hash)
     if submission_status:
         items = items.filter(models.Submission.status==submission_status)
-    if submission_id:
-        items = items.filter(models.Submission.submission_id==submission_id)
+    if submission_creator_address:
+        items = items.filter(models.Submission.submission_id==submission_creator_address)
     return [submission.Submission(
         id=item.Submission.id,
         submission_id=item.Submission.submission_id,
         campaign_id=item.Submission.campaign_id,
         description=item.Description.content,
         photo_url=f"/api/photos/{item.Submission.photo_hash}",
-        status=item.Description.status,
+        status=item.Submission.status,
         lat=item.Submission.lat,
         long=item.Submission.long
     ) for item in items.all()]
@@ -45,7 +45,34 @@ def get_submission(submission_id: int, session=Depends(get_db)):
         campaign_id=item.Submission.campaign_id,
         description=item.Description.content,
         photo_url=f"/api/photos/{item.Submission.photo_hash}",
-        status=item.Description.status,
+        status=item.Submission.status,
         lat=item.Submission.lat,
         long=item.Submission.long
     )
+
+
+@router.get("/submissions/verify/{verificator_id}", response_model=List[submission.Submission])
+def get_submissions_to_verify(verificator_id: str, 
+                   campaign_id: str | None = None,
+                   blockchain: str | None = None,
+                   session=Depends(get_db)):
+    items = session.query(models.Submission, models.Description, models.VerificationRequest)\
+        .join(models.Description, models.Submission.description_hash==models.Description.hash)\
+        .join(models.VerificationRequest, models.Submission.submission_id==models.VerificationRequest.submission_id)\
+        .filter(models.VerificationRequest.verifier_id==verificator_id)
+    if campaign_id:
+        items = items.filter(models.Submission.campaign_id==campaign_id)
+    if blockchain:
+        items = items.join(models.StashCampaign, models.Submission.campaign_id==models.StashCampaign.campaign_id)\
+                     .filter(models.StashCampaign.blockchain==blockchain)
+    
+    return [submission.Submission(
+        id=item.Submission.id,
+        submission_id=item.Submission.submission_id,
+        campaign_id=item.Submission.campaign_id,
+        description=item.Description.content,
+        photo_url=f"/api/photos/{item.Submission.photo_hash}",
+        status=item.Submission.status,
+        lat=item.Submission.lat,
+        long=item.Submission.long
+    ) for item in items.all()]

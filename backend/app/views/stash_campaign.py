@@ -48,8 +48,8 @@ def list_campaigns(blockchain: str | None = None, session=Depends(get_db)):
             blockchain=row.StashCampaign.blockchain,
             max_submissions=row.StashCampaign.max_submissions,
             remained_submissions=row.StashCampaign.remained_submissions,
-            top_left=stash_campaign.Point(row.StashCampaign.top_left_lat, row.StashCampaign.top_left_long),
-            bottom_right=stash_campaign.Point(row.StashCampaign.bottom_right_lat, row.StashCampaign.bottom_right_long)
+            top_left=stash_campaign.Point(lat=row.StashCampaign.top_left_lat, long=row.StashCampaign.top_left_long),
+            bottom_right=stash_campaign.Point(lat=row.StashCampaign.bottom_right_lat, long=row.StashCampaign.bottom_right_long)
         )
         for row in q.all()
     ]
@@ -57,5 +57,8 @@ def list_campaigns(blockchain: str | None = None, session=Depends(get_db)):
 
 @router.get("/blockchains", response_model=List[str])
 def list_blockchains():
-    return []
+    return [
+        "blockchain_a",
+        "blockchain_b"
+    ]
 
