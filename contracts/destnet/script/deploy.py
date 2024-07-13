@@ -34,7 +34,7 @@ command = f"forge script script/ProofOfHumanity.s.sol:PoHScript --chain-id {chai
 # print(command)
 # os.system(command)
 
-os.environ["POH_ADDRESS"] = "0xF630C81DE5b353dA3cf2cF35e901d018Dd96668C"
+os.environ["POH_ADDRESS"] = "0x2F7B383653f907a5f1D1c3ecF98201baa792952F"
 # os.environ["POH_ADDRESS"] = "0x0"
 
 # deploy token, campaign manager and initial stash campaign

@@ -13,7 +13,8 @@ contract PoHScript is Script {
 
         if (worldIdAddress != 0) {
             IWorldID worldId = IWorldID(address(uint160(worldIdAddress)));
-            ProofOfHumanity poh = new ProofOfHumanity(worldId);
+            ProofOfHumanity poh =
+                new ProofOfHumanity(worldId, "app_staging_4159351d39ed40966d0dc48bb0554ae5", "verify-wallet");
             console2.log("PoH address: %s", address(poh));
             vm.setEnv("POH_ADDRESS", vm.toString(address(poh)));
         } else {

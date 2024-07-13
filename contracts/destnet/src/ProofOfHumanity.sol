@@ -16,13 +16,16 @@ contract ProofOfHumanity {
     mapping(address => ProofOfHumanityEnum) public knownPoH;
     /// @dev The World ID group ID (1 for Orb-verified)
     uint256 internal immutable groupId = 1;
+    /// @dev The keccak256 hash of the externalNullifier (unique identifier of the action performed), combination of appId and action
+    uint256 internal immutable externalNullifierHash;
 
     /// @dev The address of the World ID Router contract that will be used for verifying proofs
     IWorldID public immutable worldId;
 
     // Setting the address of world ID in the constructor
-    constructor(IWorldID _worldId) {
+    constructor(IWorldID _worldId, string memory _appId, string memory _action) {
         worldId = _worldId;
+        externalNullifierHash = hashToField(abi.encodePacked(hashToField(abi.encodePacked(_appId)), _action));
     }
 
     /// @dev Creates a keccak256 hash of a bytestring.
@@ -49,7 +52,7 @@ contract ProofOfHumanity {
             groupId,
             hashToField(abi.encodePacked(userAddress)),
             nullifierHash,
-            nullifierHash, // not sure if this param is correct, example uses externalNullifierHash
+            externalNullifierHash, // not sure if this param is correct, example uses externalNullifierHash
             proof
         );
 

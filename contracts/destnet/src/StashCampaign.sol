@@ -159,8 +159,7 @@ contract StashCampaign {
 
         // Request votes from all sampled verifiers and emit all events
         for (uint256 j = 0; j < sampled.length; j++) {
-            RequestedVote memory requestedVote = RequestedVote(submissionId, false);
-            submissions[sampled[j]].requestedVotes.push(requestedVote);
+            submissions[sampled[j]].requestedVotes.push(RequestedVote(submissionId, false));
             emit VoteRequested(submissionId, sampled[j]);
         }
     }
@@ -226,7 +225,7 @@ contract StashCampaign {
 
         // checks that last round was unanimous, % 2 takes care of disputor yes / no
         bool unanimous = true;
-        for (uint256 i = numVotes - VERIFICATION_ROUND_SIZE - 1; i < numVotes - 1; i++) {
+        for (uint256 i = numVotes - VERIFICATION_ROUND_SIZE; i < numVotes - 1; i++) {
             if (
                 uint256(submissions[submissionId].votesOnThis[i].vote) % 2
                     != uint256(submissions[submissionId].votesOnThis[i + 1].vote) % 2
@@ -293,7 +292,7 @@ contract StashCampaign {
         }
         require(reqVoteIndex != MAX_INT, "Can only vote on submissions where the vote was requested");
         require(
-            submissions[msg.sender].requestedVotes[reqVoteIndex].voted = false, "Can not vote twice on a submission"
+            submissions[msg.sender].requestedVotes[reqVoteIndex].voted == false, "Can not vote twice on a submission"
         );
 
         // set that msg.sender has voted
