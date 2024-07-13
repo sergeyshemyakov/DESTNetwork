@@ -19,17 +19,17 @@ import Pin from "../components/Pin";
 import { categories } from "@/config/categories";
 import { Block } from "@/components/Block";
 import { formatCoordinate, formatNumber } from "@/utils/formaters";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { FaInfoCircle } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { API } from "@/config/api";
 import NavLink from "next/link";
+import { useWalletClient } from "wagmi";
 
 export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
   campaign,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { primaryWallet } = useDynamicContext();
+  const wallet = useWalletClient();
   const mapRef = useRef<MapRef>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -206,19 +206,19 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
               </div>
             </div>
 
-            <div className="flex justify-between">
+            <div>
               <Button
                 isLoading={isLoading}
                 variant="shadow"
                 color="primary"
-                isDisabled={!primaryWallet?.address}
-                disabled={!primaryWallet?.address}
+                isDisabled={!wallet.isSuccess}
+                disabled={!wallet.isSuccess}
                 onClick={handleSubmit}
               >
                 Submit stashing
               </Button>
 
-              {!primaryWallet?.address && (
+              {!wallet.isSuccess && (
                 <p className="mt-2 text-danger text-sm">
                   Please, connect your wallet before submission.
                 </p>

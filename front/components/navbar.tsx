@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -16,13 +18,15 @@ import clsx from "clsx";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, Logo } from "@/components/icons";
-import { DynamicWidget, IsBrowser } from "@dynamic-labs/sdk-react-core";
+import { VerifyWallet } from "./VerifyWallet";
+import { ConnectKitButton } from "connectkit";
 
 export const Navbar = () => {
   const connectButton = (
-    <IsBrowser>
-      <DynamicWidget />
-    </IsBrowser>
+    <div className="flex gap-2">
+      <VerifyWallet />
+      <ConnectKitButton />
+    </div>
   );
 
   return (

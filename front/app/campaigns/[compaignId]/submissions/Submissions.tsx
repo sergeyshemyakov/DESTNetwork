@@ -26,13 +26,13 @@ import { Key, useEffect, useMemo, useState } from "react";
 import { API } from "@/config/api";
 import Pin from "../../components/Pin";
 import { FaCheck, FaRetweet, FaTimes } from "react-icons/fa";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { SubmissionsStates } from "@/config/categories";
 import { IoMdRefresh } from "react-icons/io";
+import { useWalletClient } from "wagmi";
 
 export default function Submissions({ campaignId }: { campaignId: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { primaryWallet } = useDynamicContext();
+  const wallet = useWalletClient();
 
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [popupInfo, setPopupInfo] = useState<Submission | null>(null);
@@ -42,21 +42,21 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
   const [isSubmissionsLoading, setIsSubmissionsLoading] = useState(false);
 
   const getData = async () => {
-    if (!primaryWallet?.address) return;
+    if (!wallet.isSuccess) return;
 
     setIsSubmissionsLoading(true);
     const { data } = await API.get(
-      `submissions?campaign_id=${campaignId}&user_address=${primaryWallet?.address}`
+      `submissions?campaign_id=${campaignId}&user_address=${wallet.data.account.address}`
     );
     setSubmissions(data);
     setIsSubmissionsLoading(false);
   };
 
   useEffect(() => {
-    if (primaryWallet) {
+    if (wallet.isSuccess) {
       getData();
     }
-  }, [primaryWallet]);
+  }, [wallet.isSuccess]);
 
   const pins = useMemo(
     () =>

@@ -1,4 +1,3 @@
-import { IsBrowser } from "@dynamic-labs/sdk-react-core";
 import Submissions from "./Submissions";
 
 interface SubPageProps {
@@ -6,9 +5,5 @@ interface SubPageProps {
 }
 
 export default function Page({ params }: SubPageProps) {
-  return (
-    <IsBrowser>
-      <Submissions campaignId={params.compaignId} />
-    </IsBrowser>
-  );
+  return <Submissions campaignId={params.compaignId} />;
 }

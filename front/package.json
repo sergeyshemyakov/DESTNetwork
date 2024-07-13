@@ -9,8 +9,6 @@
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
-		"@dynamic-labs/ethereum": "^2.3.0",
-		"@dynamic-labs/sdk-react-core": "^2.3.0",
 		"@nextui-org/button": "2.0.34",
 		"@nextui-org/card": "^2.0.31",
 		"@nextui-org/code": "2.0.29",
@@ -26,10 +24,13 @@
 		"@nextui-org/theme": "2.2.5",
 		"@react-aria/ssr": "3.9.4",
 		"@react-aria/visually-hidden": "3.8.12",
+		"@tanstack/react-query": "^5.51.1",
 		"@types/mapbox-gl": "^3.1.0",
 		"@uiw/react-md-editor": "^4.0.4",
+		"@worldcoin/idkit": "^1.2.2",
 		"axios": "^1.7.2",
 		"clsx": "2.1.1",
+		"connectkit": "^1.8.2",
 		"framer-motion": "~11.1.1",
 		"intl-messageformat": "^10.5.0",
 		"mapbox-gl": "^3.5.1",
@@ -39,7 +40,9 @@
 		"react-dom": "18.3.1",
 		"react-icons": "^5.2.1",
 		"react-map-gl": "^7.1.7",
-		"react-markdown": "^9.0.1"
+		"react-markdown": "^9.0.1",
+		"viem": "^2.17.3",
+		"wagmi": "^2.8.8"
 	},
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.13",
