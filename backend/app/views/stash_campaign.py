@@ -13,7 +13,7 @@ router = APIRouter()
 @router.get("/stash-campaigns/{campaign_id}", response_model=stash_campaign.StashCampaign)
 def get_campaign(campaign_id: str, session=Depends(get_db)):
     item: models.StashCampaign = session.query(models.StashCampaign)\
-        .filter(campaign_id=campaign_id).first()
+        .filter(models.StashCampaign.campaign_id==campaign_id).first()
     description: models.Description = session.query(models.Description).get(item.description_hash)
     return stash_campaign.StashCampaign(
         campaign_id=item.campaign_id,
@@ -26,8 +26,8 @@ def get_campaign(campaign_id: str, session=Depends(get_db)):
         blockchain=item.blockchain,
         max_submissions=item.max_submissions,
         remained_submissions=item.remained_submissions,
-        top_left=stash_campaign.Point(item.top_left_lat, item.top_left_long),
-        bottom_right=stash_campaign.Point(item.bottom_right_lat, item.bottom_right_long)
+        top_left=stash_campaign.Point(lat=item.top_left_lat, long=item.top_left_long),
+        bottom_right=stash_campaign.Point(lat=item.bottom_right_lat, long=item.bottom_right_long)
     )
 
 
