@@ -5,3 +5,4 @@ front/.next
 
 .env
 env.json
+backend/.env

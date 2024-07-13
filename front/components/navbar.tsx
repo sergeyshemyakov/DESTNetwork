@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -16,13 +18,19 @@ import clsx from "clsx";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, Logo } from "@/components/icons";
-import { DynamicWidget, IsBrowser } from "@dynamic-labs/sdk-react-core";
+import { VerifyWallet } from "./VerifyWallet";
+import { ConnectKitButton } from "connectkit";
+import { useTheme } from "next-themes";
 
 export const Navbar = () => {
+  const { theme } = useTheme();
+
+  const mode = theme === "light" ? "light" : "dark";
   const connectButton = (
-    <IsBrowser>
-      <DynamicWidget />
-    </IsBrowser>
+    <div className="flex gap-2">
+      <VerifyWallet />
+      <ConnectKitButton mode={mode} />
+    </div>
   );
 
   return (

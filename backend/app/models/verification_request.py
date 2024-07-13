@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Column, Boolean, Integer, String
 
 from .base import Base
 
@@ -8,3 +8,4 @@ class VerificationRequest(Base):
     id = Column(Integer, primary_key=True, index=True)
     submission_id = Column(String)
     verifier_id = Column(String)
+    voted = Column(Boolean, default=False, insert_default=False)
