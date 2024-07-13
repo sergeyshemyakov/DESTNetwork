@@ -1,69 +1,38 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + NextUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "DEST Network",
+  description:
+    "Dest is a decentralized platform that encourages individuals to securely stash  resources, fostering community aid and resilience.",
   navItems: [
     {
       label: "Home",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Campaigns",
+      href: "/campaigns",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
-    },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
-      href: "/about",
+      label: "Submissions",
+      href: "/submissions",
     },
   ],
-  navMenuItems: [
+  mainCards: [
     {
-      label: "Profile",
-      href: "/profile",
+      title: "Secure resources and build community aid",
+      text: "By participating in stash campaigns, you help secure essential resources and strengthen community aid efforts, ensuring readiness in times of need.",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      title: "Secure resources and build community aid",
+      text: "By participating in stash campaigns, you help secure essential resources and strengthen community aid efforts, ensuring readiness in times of need.",
     },
     {
-      label: "Projects",
-      href: "/projects",
-    },
-    {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
+      title: "Secure resources and build community aid",
+      text: "By participating in stash campaigns, you help secure essential resources and strengthen community aid efforts, ensuring readiness in times of need.",
     },
   ],
   links: {
-    github: "https://github.com/nextui-org/nextui",
-    twitter: "https://twitter.com/getnextui",
-    docs: "https://nextui.org",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    github: "https://github.com/sergeyshemyakov/DESTNetwork",
   },
 };

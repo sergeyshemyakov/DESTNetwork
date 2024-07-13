@@ -1,0 +1,12 @@
+build:
+  docker:
+    backend: backend/Dockerfile
+release:
+  image: backend
+  command:
+    - alembic upgrade head
+run:
+  web:
+    command: 
+      - uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    image: backend
