@@ -14,3 +14,6 @@ class Submission(Base):
     resolved = Column(Boolean, default=False)
     lat = Column(Float)
     long = Column(Float)
+
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

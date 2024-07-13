@@ -20,3 +20,7 @@ class StashCampaign(Base):
     top_left_long = Column(Float)
     bottom_right_lat = Column(Float)
     bottom_right_long = Column(Float)
+    expiration_timestamp = Column(Integer)
+
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
