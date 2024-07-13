@@ -3,11 +3,12 @@ pragma solidity >=0.8.18;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./ProofOfHumanity.sol";
+import "./CampaignManager.sol";
 
 contract StashCampaign {
-    uint256 immutable MIN_SUBMISSION_DURATION = 120; // should be 7776000 = 3 months for non-hack version
-    uint8 immutable VERIFICATION_ROUND_SIZE = 3; // could be bigger for non-hack version
-    uint256 immutable DISPUTE_WINDOW = 60; // should be 1209600 = 2 weeks for non-hack version
+    uint256 public immutable MIN_SUBMISSION_DURATION = 120; // should be 7776000 = 3 months for non-hack version
+    uint8 public immutable VERIFICATION_ROUND_SIZE = 3; // could be bigger for non-hack version
+    uint256 public immutable DISPUTE_WINDOW = 60; // should be 1209600 = 2 weeks for non-hack version
     uint256 MAX_INT = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
 
     enum SubmissionStatus {
@@ -84,6 +85,7 @@ contract StashCampaign {
     address[] public submissionIds;
     mapping(address => Submission) public submissions;
     ProofOfHumanity public immutable proofOfHumanity;
+    CampaignManager public immutable campaignManager;
 
     modifier submissionExists(address submissionId) {
         require(submissions[submissionId].minResolveTimestamp != 0, "Submission does not exist");
@@ -110,6 +112,7 @@ contract StashCampaign {
         Coordinate memory bottomRight,
         bytes32 _descriptionHash,
         ProofOfHumanity _proofOfHumanity,
+        CampaignManager _campaignManager,
         uint256 _disputDepositAmount
     ) {
         campaignExpirationTimestamp = _campaignExpirationTimestamp;
@@ -122,6 +125,7 @@ contract StashCampaign {
         campaignArea[1] = bottomRight;
         descriptionHash = _descriptionHash;
         proofOfHumanity = _proofOfHumanity;
+        campaignManager = _campaignManager;
         disputDepositAmount = _disputDepositAmount;
     }
 
@@ -190,7 +194,10 @@ contract StashCampaign {
     // The function can be called only from the creation of a stash campaign.
     //Dummy submission has empty votesOnThis and is forever stuck in Disputed state, but can vote on others.
     function createDummySubmission(address dummySubmitter) public {
-        require(msg.sender == campaignCreator, "Only campaign creator can create dummy submissions");
+        require(
+            msg.sender == campaignCreator || msg.sender == address(campaignManager),
+            "Only campaign creator and campaign manager contract can create dummy submissions"
+        );
         require(submissions[dummySubmitter].minResolveTimestamp == 0, "Submission already created from this address");
         require(submissionIds.length < maxSubmissions, "Reached the limit of submissions");
 
@@ -206,7 +213,8 @@ contract StashCampaign {
     function recoupCampaignTokens() public {
         require(block.timestamp > campaignExpirationTimestamp, "Campaign has not expired, tokens can not be recouped");
 
-        rewardToken.transfer(campaignCreator, rewardToken.balanceOf(address(this)));
+        bool success = rewardToken.transfer(campaignCreator, rewardToken.balanceOf(address(this)));
+        require(success, "Token transfer failed");
     }
 
     // Internal function that called after a vote is cast on a submission and a voting round is completed.
@@ -254,7 +262,8 @@ contract StashCampaign {
             "Can not dispute users with proved proof of humanity"
         );
 
-        rewardToken.transferFrom(msg.sender, address(this), disputDepositAmount);
+        bool success = rewardToken.transferFrom(msg.sender, address(this), disputDepositAmount);
+        require(success, "Token transfer failed");
         if (disputorNotesHash != 0) submissions[submissionId].disputorNotesHashes.push(disputorNotesHash);
         // add opinion contrary to previous consensus and initiate a new round
         VoteOpinion opinion = submissions[submissionId].status == SubmissionStatus.Accepted
@@ -315,7 +324,8 @@ contract StashCampaign {
 
         // take all penalties and share among all correct voters
         if (submissions[submissionId].status == SubmissionStatus.Accepted) {
-            rewardToken.transfer(submissionId, submissions[submissionId].lockedReward);
+            bool success = rewardToken.transfer(submissionId, submissions[submissionId].lockedReward);
+            require(success, "Token transfer");
             submissions[submissionId].lockedReward = 0;
             uint256 penalty = 0;
             uint256 yesVotersCount = 0;
@@ -340,14 +350,16 @@ contract StashCampaign {
                 Vote memory _vote = submissions[submissionId].votesOnThis[i];
                 // correct disputor receives deposit + their share of penalty tokens
                 if (_vote.vote == VoteOpinion.DisputorYes) {
-                    rewardToken.transfer(_vote.verifier, share + disputDepositAmount);
+                    bool success = rewardToken.transfer(_vote.verifier, share + disputDepositAmount);
+                    require(success, "Token transfer failed");
                 }
                 // correct voter receives their share of penalty. It is transferred
                 // as locked reward or transferred directly, depending on whether the
                 // voter already resolved their submission
                 if (_vote.vote == VoteOpinion.Yes) {
                     if (submissions[_vote.verifier].lockedReward == 0) {
-                        rewardToken.transfer(_vote.verifier, share);
+                        bool success = rewardToken.transfer(_vote.verifier, share);
+                        require(success, "Token transfer failed");
                     } else {
                         submissions[_vote.verifier].lockedReward += share;
                     }
@@ -378,14 +390,16 @@ contract StashCampaign {
                 Vote memory _vote = submissions[submissionId].votesOnThis[i];
                 // correct disputor receives deposit + their share of penalty tokens
                 if (_vote.vote == VoteOpinion.DisputorNo) {
-                    rewardToken.transfer(_vote.verifier, share + disputDepositAmount);
+                    bool success = rewardToken.transfer(_vote.verifier, share + disputDepositAmount);
+                    require(success, "Token transfer failed");
                 }
                 // correct voter receives their share of penalty. It is transferred
                 // as locked reward or directly, depending on whether the
                 // voter already resolved their submission
                 if (_vote.vote == VoteOpinion.No) {
                     if (submissions[_vote.verifier].lockedReward == 0) {
-                        rewardToken.transfer(_vote.verifier, share);
+                        bool success = rewardToken.transfer(_vote.verifier, share);
+                        require(success, "Token transfer failed");
                     } else {
                         submissions[_vote.verifier].lockedReward += share;
                     }
