@@ -13,10 +13,6 @@ export const siteConfig = {
       label: "Campaigns",
       href: "/campaigns",
     },
-    {
-      label: "Submissions",
-      href: "/submissions",
-    },
   ],
   mainCards: [
     {
