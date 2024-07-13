@@ -5,6 +5,7 @@ libs = ["lib"]
 auto_detect_solc = true
 remappings = [
     "@world-id/=lib/world-id-starter-hardhat/contracts/interfaces/",
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
