@@ -6,3 +6,6 @@ class CampaignCreatedEventConsumer(BaseConsumer):
     def __init__(self, *args, **kwargs) -> None:
         super.__init__(*args, **kwargs)
         self.consumer_name = "CampaignCreatedConsumer"
+
+    def handle_event(event):
+        print('working cc')

@@ -22,10 +22,10 @@ class Submission(BaseModel):
     
     @staticmethod
     def calc_state(to_verify: bool, status: int, resolved: bool) -> str:
-        if to_verify:
+        if to_verify and status == 0:
             return SubmissionState.TO_VERIFY
-        if resolved:
-            return SubmissionState.RESOLVED
         if not to_verify and status == 0:
             return SubmissionState.DISPUTED
+        if resolved:
+            return SubmissionState.RESOLVED
         return SubmissionState.FINALIZED
