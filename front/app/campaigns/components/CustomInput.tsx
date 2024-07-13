@@ -1,6 +1,5 @@
-// components/CustomFileInput.tsx
 import { useRef, useState } from "react";
-import { Button, Card, CardBody, Input } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 
 interface CustomFileInputProps {
   onFileChange: (file: File | null) => void;

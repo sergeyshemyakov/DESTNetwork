@@ -16,19 +16,19 @@ export const CampaignCard: FC<CampaignCardProps> = ({ campaign }) => {
       <CardHeader className="w-full flex justify-between">
         <div className="flex gap-2 items-center">
           <Image
-            alt="nextui logo"
+            alt="category icon"
             height={40}
             radius="sm"
-            src="med.png"
+            src="/med.png"
             width={40}
           />
           <div className="flex flex-col">
             <p className="text-lg header-text">
               {categories[campaign.campaign_type]}
             </p>
-            <p className="text-small text-default-500">
+            {/* <p className="text-small text-default-500 w-full overflow-hidden">
               {campaign.campaign_creator}
-            </p>
+            </p> */}
           </div>
         </div>
 

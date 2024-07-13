@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Column, Float, Integer, String, Boolean
 
 from .base import Base
 
@@ -11,5 +11,6 @@ class Submission(Base):
     photo_hash = Column(String)
     description_hash = Column(String)
     status = Column(Integer)
+    resolved = Column(Boolean, default=False)
     lat = Column(Float)
     long = Column(Float)

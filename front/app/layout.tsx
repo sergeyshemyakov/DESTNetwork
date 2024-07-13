@@ -37,6 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className={clsx(
           "min-h-screen bg-background font-text antialiased",
           TextFont.className,
+          TextFont.variable,
           TitleFont.variable
         )}
       >

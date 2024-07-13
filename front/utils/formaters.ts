@@ -7,3 +7,7 @@ export const formatNumber = (
     ...params,
   }).format(value);
 };
+
+export const formatCoordinate = (value: number) => {
+  return Math.round(value * 1000000);
+};
