@@ -28,7 +28,7 @@ export default function Home() {
       </div>
       <div className="flex flex-col justify-center">
         <div className="flex flex-row justify-center">
-          <p className="text-xl text-gray-500 text-center max-w-[600]">
+          <p className="text-xl text-gray-500 text-center max-w-[600px]">
             Dest is a decentralized platform that encourages individuals to
             securely stash resources, fostering community aid and resilience.
           </p>

@@ -12,7 +12,7 @@ export const Block: FC<PropsWithChildren<BlockProps>> = ({
 }) => {
   return (
     <div className="flex flex-col w-full">
-      <div className="max-w-[600] w-full mb-8">
+      <div className="max-w-[600px] w-full mb-8">
         <h2 className="header-text text-6xl">{title}</h2>
         <p className="text-xl mt-2 text-gray-500">{subtitle}</p>
       </div>
