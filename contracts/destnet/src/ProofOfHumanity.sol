@@ -33,6 +33,7 @@ contract ProofOfHumanity {
         return uint256(keccak256(abi.encodePacked(value))) >> 8;
     }
 
+    // Returns true if and only if the user has verifier their proof of humanity
     function checkPoH(address userAddress) public view returns (bool) {
         return (knownPoH[userAddress] != ProofOfHumanityEnum.None);
     }
