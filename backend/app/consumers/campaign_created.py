@@ -35,13 +35,22 @@ class CampaignCreatedEventConsumer(BaseConsumer):
         self.event_filter = contract.events.CampaignCreated.create_filter(fromBlock="latest")
         self.children = []
         self.child_threads = []
+        existing_campaigns = [
+            item.campaign_id for item in self.session.query(StashCampaign).all()
+        ]
+        for campaign_id in existing_campaigns:
+            try:
+                self.spawn_consumer(campaign_id)
+            except Exception as e:
+                print(e, f"cannot spawn consumer for {campaign_id}")
+        
 
     def handle_event(self, event):
         campaign_address = event.get("args").get("campaign")
         self.save_stash_campaign(campaign_address)
         self.spawn_consumer(campaign_address)
 
-    def save_stash_campaign(self,campaign_address):
+    def save_stash_campaign(self, campaign_address):
         campaign_contract = self.w3.eth.contract(campaign_address, abi=self.CAMPAIGN_ABI)
 
         top_left_lat, top_left_long = campaign_contract.functions.campaignArea(0).call()
@@ -52,7 +61,7 @@ class CampaignCreatedEventConsumer(BaseConsumer):
     
         stash_campaign = StashCampaign(
             campaign_id=campaign_address,
-            description_hash=campaign_contract.functions.descriptionHash().call().decode(),
+            description_hash=campaign_contract.functions.descriptionHash().call().hex(),
             campaign_creator=campaign_contract.functions.campaignCreator().call(),
             reward=campaign_contract.functions.reward().call(),
             reward_token=reward_token,
@@ -70,7 +79,6 @@ class CampaignCreatedEventConsumer(BaseConsumer):
         print(stash_campaign.to_dict())
         self.session.add(stash_campaign)
         self.session.commit()
-        self.spawn_consumers(campaign_address)
 
     def spawn_consumer(self, campaign_address):
         new_consumer = CampaignEventConsumer(
@@ -91,10 +99,12 @@ class CampaignCreatedEventConsumer(BaseConsumer):
                 for event in self.event_filter.get_new_entries():
                     print(f"Event for consumer: {self.consumer_name}, blockchain: {self.blockchain_name},"
                         f" contract address: {self.contract_address}, event: {event}")
-                    self.handle_event(None)
+                    self.handle_event(event)
                 time.sleep(self.poll_interval)
         finally:
-            self.session.remove()
+            print("virubaem bazu")
+            self.session.close()
+            self.stopped = True
             for consumer in self.children:
                 consumer.stopped = True
             for thread in self.child_threads:
