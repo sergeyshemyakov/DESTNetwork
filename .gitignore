@@ -2,3 +2,6 @@ front/node_modules
 front/.next
 **/__pycache__/
 **/.DS_Store
+
+.env
+env.json

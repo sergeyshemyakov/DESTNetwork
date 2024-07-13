@@ -18,7 +18,7 @@ contract ProofOfHumanity {
     uint256 internal immutable groupId = 1;
 
     /// @dev The address of the World ID Router contract that will be used for verifying proofs
-    IWorldID internal immutable worldId;
+    IWorldID public immutable worldId;
 
     // Setting the address of world ID in the constructor
     constructor(IWorldID _worldId) {

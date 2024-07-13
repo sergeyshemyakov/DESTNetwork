@@ -27,8 +27,8 @@ contract StashCampaign {
 
     // 6 digits precision, i.e. actual latitude = lat / 10**6
     struct Coordinate {
-        uint256 lat;
-        uint256 long;
+        int256 lat;
+        int256 long;
     }
 
     struct RequestedVote {

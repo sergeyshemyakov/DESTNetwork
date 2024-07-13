@@ -1,0 +1,16 @@
+{
+  "transactions": [
+    {
+      "rpc": "wss://sepolia.drpc.org"
+    },
+    {
+      "rpc": "wss://sepolia.drpc.org"
+    },
+    {
+      "rpc": "wss://sepolia.drpc.org"
+    },
+    {
+      "rpc": "wss://sepolia.drpc.org"
+    }
+  ]
+}
