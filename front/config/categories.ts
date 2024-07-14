@@ -21,6 +21,6 @@ export const categories: Record<number, Category> = {
 export const SubmissionsStates = {
   "To verify": "verify",
   Finalized: "finalized",
-  Desputed: "desputed",
+  Disputed: "disputed",
   Resolved: "resolved",
 };

@@ -7,5 +7,5 @@ interface Submission {
   photo_url: string;
   status: number;
   submission_id: string;
-  state: "Finalized" | "To verify" | "Resolved" | "Desputed";
+  state: "Finalized" | "To verify" | "Resolved" | "Disputed";
 }

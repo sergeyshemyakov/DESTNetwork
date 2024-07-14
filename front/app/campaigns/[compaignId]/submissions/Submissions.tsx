@@ -6,12 +6,13 @@ import {
   FullscreenControl,
   GeolocateControl,
   Map,
+  MapRef,
   Marker,
   NavigationControl,
   Popup,
   ScaleControl,
 } from "react-map-gl";
-import { Key, useEffect, useMemo, useState } from "react";
+import { Key, useEffect, useMemo, useRef, useState } from "react";
 import { API } from "@/config/api";
 import Pin from "../../components/Pin";
 import { SubmissionsStates } from "@/config/categories";
@@ -21,10 +22,12 @@ import { useDestAccount } from "@/hooks/useDestAccount";
 import { ReopenDispute } from "./ReopenDispute";
 import { BiLoaderAlt } from "react-icons/bi";
 
-export default function Submissions({ campaignId }: { campaignId: string }) {
+export default function Submissions({ compaignId }: { compaignId: string }) {
+  const mapRef = useRef<MapRef>(null);
   const { isConnected, account } = useDestAccount();
 
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [campaign, setCampaign] = useState<StashCampaign>();
   const [popupInfo, setPopupInfo] = useState<Submission | null>(null);
   const [activeTab, setActiveTab] = useState<string>("verify");
   const [isSubmissionsLoading, setIsSubmissionsLoading] = useState(false);
@@ -33,11 +36,15 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
     if (!isConnected) return;
 
     setIsSubmissionsLoading(true);
-    const { data } = await API.get(
-      `submissions?campaign_id=${campaignId}&user_address=${account.address}`
+    const { data: campaignD } = await API.get(
+      `stash-campaigns/${compaignId}?blockchain=${account.chainId}`
     );
+    const { data } = await API.get(
+      `submissions?campaign_id=${campaignD.campaign_id}&user_address=${account.address}`
+    );
+    setCampaign(campaignD);
     setSubmissions(data);
-    // setIsSubmissionsLoading(false);
+    setIsSubmissionsLoading(false);
   };
 
   useEffect(() => {
@@ -74,6 +81,25 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
     setPopupInfo(null);
   };
 
+  const onSuccess = () => {
+    setPopupInfo(null);
+    getData();
+  };
+
+  useEffect(() => {
+    if (campaign) {
+      setTimeout(() => {
+        mapRef.current?.fitBounds(
+          [
+            [campaign.top_left.long, campaign.top_left.lat],
+            [campaign.bottom_right.long, campaign.bottom_right.lat],
+          ],
+          { duration: 1000 }
+        );
+      }, 500);
+    }
+  }, [campaign]);
+
   return (
     <Block
       title={
@@ -81,7 +107,9 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
           <h2 className="header-text text-6xl flex gap-4 items-center">
             Submissions
           </h2>
-          <p className="text-primary italic">(Campaign: {campaignId})</p>
+          <p className="text-primary italic">
+            (Campaign: {campaign?.campaign_id})
+          </p>
         </div>
       }
     >
@@ -118,13 +146,7 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
         )}
         <div className="w-full rounded-lg overflow-hidden">
           <Map
-            initialViewState={{
-              latitude: 40,
-              longitude: -100,
-              zoom: 3.5,
-              bearing: 0,
-              pitch: 0,
-            }}
+            ref={mapRef}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAP_BOX_KEY}
             style={{ width: "100%", height: 500 }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
@@ -155,13 +177,19 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
 
                 {activeTab === "verify" && popupInfo.status === 0 && (
                   <div className="flex gap-2">
-                    <AcceptSubmission submission={popupInfo} />
-                    <DeclineSubmission submission={popupInfo} />
+                    <AcceptSubmission
+                      submission={popupInfo}
+                      onSuccess={onSuccess}
+                    />
+                    <DeclineSubmission
+                      submission={popupInfo}
+                      onSuccess={onSuccess}
+                    />
                   </div>
                 )}
 
                 {activeTab === "finalized" && (
-                  <ReopenDispute submission={popupInfo} onSuccess={getData} />
+                  <ReopenDispute submission={popupInfo} onSuccess={onSuccess} />
                 )}
               </Popup>
             )}

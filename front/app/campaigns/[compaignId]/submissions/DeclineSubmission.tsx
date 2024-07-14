@@ -2,15 +2,17 @@
 import { ProgressModal } from "@/components/ProgressModal";
 import { submissionCreateAbi } from "@/config/abi";
 import { submissionCreateAddress } from "@/config/addresses";
+import { API } from "@/config/api";
 import { useDestAccount } from "@/hooks/useDestAccount";
 import { Button } from "@nextui-org/button";
 import { FC, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useWriteContract } from "wagmi";
 
-export const DeclineSubmission: FC<{ submission: Submission }> = ({
-  submission,
-}) => {
+export const DeclineSubmission: FC<{
+  submission: Submission;
+  onSuccess: () => void;
+}> = ({ submission, onSuccess }) => {
   const { isConnected, account } = useDestAccount();
   const { data: hash, error, writeContractAsync } = useWriteContract();
 
@@ -30,6 +32,9 @@ export const DeclineSubmission: FC<{ submission: Submission }> = ({
         args: [submission.submission_id as `0x${string}`, 2],
       });
 
+      await API.get(`submissions/${submission.submission_id}/reject`);
+
+      onSuccess();
       setTimeout(() => {
         setStatus("completed");
       }, 1000);

@@ -19,7 +19,7 @@ export const ProgressModal: FC<{
   });
 
   return (
-    <Modal size="md" isOpen={status === "progress"}>
+    <Modal backdrop="blur" size="md" isOpen={status === "progress"}>
       <ModalContent>
         {() => (
           <>

@@ -49,6 +49,10 @@ export const ReopenDispute: FC<{
         args: [submission.submission_id as `0x${string}`, `0x${enDesc.hash}`],
       });
 
+      await API.get(
+        `submissions/${submission.submission_id}/dispute?description_hash=${enDesc.hash}&disputer=${account.address}`
+      );
+
       onSuccess();
       setTimeout(() => {
         setStatus("completed");
