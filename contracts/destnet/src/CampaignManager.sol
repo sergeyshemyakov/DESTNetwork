@@ -12,10 +12,12 @@ contract CampaignManager {
     event CampaignCreated(address indexed campaign);
 
     ProofOfHumanity public immutable proofOfHumanity;
+    address public immutable deployer;
     address[] public campaigns;
 
     constructor(ProofOfHumanity _proofOfHumanity) {
         proofOfHumanity = _proofOfHumanity;
+        deployer = msg.sender;
     }
 
     // Function creates a new campaign with given params. Tokens are automatiaclly transferred
@@ -63,5 +65,10 @@ contract CampaignManager {
         campaign.createDummySubmission(dummy1);
         campaign.createDummySubmission(dummy2);
         campaign.createDummySubmission(dummy3);
+    }
+
+    function registerCampaign(address campaign) public {
+        require(msg.sender == deployer, "Only initial deployer can manually register campaigns");
+        campaigns.push(campaign);
     }
 }

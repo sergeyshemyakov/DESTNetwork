@@ -1,3 +1,5 @@
+![image](assets/banner.png)
+
 # DESTNetwork
 
 DESTNet project from ETHGlobal Brussels 2024 hackathon
@@ -16,7 +18,7 @@ DESTNet project from ETHGlobal Brussels 2024 hackathon
 
 ## Introduction
 
-Decentralized Stash Network, Destnet or DEST Network incentivizes users in a particular area to create stashes of some items, to prepare for a natural disaster (medicine, inflatable boats, radio receivers).
+Decentralized Stash Network, Destnet or DEST Network is a DePIN project that incentivizes users in a particular area to create stashes of some items, to prepare for a natural disaster (medicine, inflatable boats, radio receivers, ...).
 
 ### Why
 
@@ -59,7 +61,7 @@ Provide links to a live demo or video demonstration:
 
 - App: Next.js
 - BFF: Next.js
-- Transaction signature: vagmi, viem, wallectConnect
+- Transaction signature: wagmi, viem, wallectConnect
 - Deployment: Firebase
 
 ## Architecture

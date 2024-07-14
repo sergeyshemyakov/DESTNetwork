@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    },
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    },
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    },
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    },
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    },
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    },
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    },
+    {
+      "rpc": "https://scroll-sepolia.drpc.org"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "rpc": "https://devnet.neonevm.org"
+    },
+    {
+      "rpc": "https://devnet.neonevm.org"
+    },
+    {
+      "rpc": "https://devnet.neonevm.org"
+    },
+    {
+      "rpc": "https://devnet.neonevm.org"
+    },
+    {
+      "rpc": "https://devnet.neonevm.org"
+    },
+    {
+      "rpc": "https://devnet.neonevm.org"
+    },
+    {
+      "rpc": "https://devnet.neonevm.org"
+    },
+    {
+      "rpc": "https://devnet.neonevm.org"
+    }
+  ]
+}

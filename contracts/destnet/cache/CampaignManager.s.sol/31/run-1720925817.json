@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    },
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    },
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    },
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    },
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    },
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    },
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    },
+    {
+      "rpc": "https://public-node.testnet.rsk.co"
+    }
+  ]
+}

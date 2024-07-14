@@ -11,9 +11,11 @@ router = APIRouter()
 
 
 @router.get("/stash-campaigns/{campaign_id}", response_model=stash_campaign.StashCampaign)
-def get_campaign(campaign_id: str, session=Depends(get_db)):
+def get_campaign(campaign_id: str, blockchain: str, session=Depends(get_db)):
     item: models.StashCampaign = session.query(models.StashCampaign)\
-        .filter(models.StashCampaign.campaign_id==campaign_id).first()
+        .filter(
+            models.StashCampaign.campaign_id==campaign_id,
+            models.StashCampaign.blockchain==blockchain).first()
     description: models.Description = session.query(models.Description).get(item.description_hash)
     return stash_campaign.StashCampaign(
         campaign_id=item.campaign_id,

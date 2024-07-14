@@ -1,0 +1,100 @@
+{
+  "compiler": {
+    "version": "0.8.26+commit.8a97fa7a"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "",
+            "type": "bytes"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "onERC721Received",
+        "outputs": [
+          {
+            "internalType": "bytes4",
+            "name": "",
+            "type": "bytes4"
+          }
+        ]
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "remappings": [
+      "@world-id/=lib/world-id-starter-hardhat/contracts/interfaces/",
+      "forge-std/=lib/forge-std/src/",
+      "world-id-starter-hardhat/=lib/world-id-starter-hardhat/contracts/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "compilationTarget": {
+      "lib/forge-std/src/mocks/MockERC721.sol": "IERC721TokenReceiver"
+    },
+    "evmVersion": "paris",
+    "libraries": {}
+  },
+  "sources": {
+    "lib/forge-std/src/interfaces/IERC165.sol": {
+      "keccak256": "0x414b2861b1acbf816ccb7346d3f16cf6c1e002e9e5e40d2f1f26fa5ddc2ea600",
+      "urls": [
+        "bzz-raw://698352fb240868ea8f1d1fe389993035eeab930f10d06934f80ccfb2b6ccbfbc",
+        "dweb:/ipfs/QmT6WLHAgXxFhh12kWym895oTzXid1326iZiwT3pyfggoT"
+      ],
+      "license": "MIT"
+    },
+    "lib/forge-std/src/interfaces/IERC721.sol": {
+      "keccak256": "0xf069262a264fdb69f8f37a10d2df7374649e9ba73f8414c9c8a3b51184625f15",
+      "urls": [
+        "bzz-raw://924a41ca82a68ffbd503a5faf2f76d13e9938f10501a71094716f12bb64b4b7f",
+        "dweb:/ipfs/QmdWnqfKc5ZGhmxNPTde4zrFchnv9Yk9MpCMb2rdhXE5gm"
+      ],
+      "license": "MIT"
+    },
+    "lib/forge-std/src/mocks/MockERC721.sol": {
+      "keccak256": "0x3293dcbb7acd28df553c954e4e39e288bf10aab7ecda8d50ef21b4f4a91a28d9",
+      "urls": [
+        "bzz-raw://9eb374daf6df34f4392f8926f1fddbce9f22c423066aeaefdfbe77395f77967b",
+        "dweb:/ipfs/QmWR81zBJRX2uyRjveGzikYPj6ZwKppWsU49YEQXTLWUsN"
+      ],
+      "license": "MIT"
+    }
+  },
+  "version": 1
+}
