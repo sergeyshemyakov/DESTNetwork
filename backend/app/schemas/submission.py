@@ -8,6 +8,15 @@ class SubmissionState(Enum):
     RESOLVED = "Resolved"
 
 
+class SubmissionRequest(BaseModel):
+    submission_id: str
+    campaign_id: str
+    photo_hash: str
+    description_hash: str
+    lat: float
+    long: float
+
+
 class Submission(BaseModel):
     id: int
     submission_id: str
