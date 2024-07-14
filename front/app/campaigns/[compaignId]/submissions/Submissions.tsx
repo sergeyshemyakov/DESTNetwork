@@ -29,6 +29,7 @@ import { FaRetweet, FaTimes } from "react-icons/fa";
 import { SubmissionsStates } from "@/config/categories";
 import { useWalletClient } from "wagmi";
 import { AcceptSubmission } from "./AcceptSubmission";
+import { DeclineSubmission } from "./DeclineSubmission";
 
 export default function Submissions({ campaignId }: { campaignId: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -166,14 +167,7 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
                 {activeTab === "verify" && popupInfo.status === 0 && (
                   <div className="flex gap-2">
                     <AcceptSubmission submission={popupInfo} />
-                    <Button
-                      size="sm"
-                      variant="bordered"
-                      color="danger"
-                      startContent={<FaTimes />}
-                    >
-                      Decline
-                    </Button>
+                    <DeclineSubmission submission={popupInfo}>
                   </div>
                 )}
 

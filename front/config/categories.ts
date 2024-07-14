@@ -1,16 +1,20 @@
 interface Category {
-  name: string
-  icon: string
+  name: string;
+  icon: string;
 }
 
 export const categories: Record<number, Category> = {
   0: {
     name: "Medicine",
-    icon: "/med.png"
+    icon: "/med.png",
   },
   1: {
     name: "Supplies",
-    icon: "/med.png"
+    icon: "/med.png",
+  },
+  2: {
+    name: "Supplies2",
+    icon: "/med.png",
   },
 };
 
