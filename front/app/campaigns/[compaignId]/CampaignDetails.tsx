@@ -89,28 +89,27 @@ export const CampaignDetails: FC<{ compaignId: string }> = ({ compaignId }) => {
         API.post("photos/upload", formData),
       ]);
 
-      // await writeContractAsync({
-      //   abi: submissionCreateAbi,
-      //   account: account.address,
-      //   address: submissionCreateAddress,
-      //   functionName: `createSubmission`,
-      //   args: [
-      //     `0x${enPhoto.data.photo_hash}`,
-      //     `0x${enSubmissionDescription.data.hash}`,
-      //     BigInt(`${formatCoordinate(location.lat)}`),
-      //     BigInt(`${formatCoordinate(location.long)}`),
-      //   ],
-      // });
+      await writeContractAsync({
+        abi: submissionCreateAbi,
+        account: account.address,
+        address: submissionCreateAddress,
+        functionName: `createSubmission`,
+        args: [
+          `0x${enPhoto.data.photo_hash}`,
+          `0x${enSubmissionDescription.data.hash}`,
+          BigInt(`${formatCoordinate(location.lat)}`),
+          BigInt(`${formatCoordinate(location.long)}`),
+        ],
+      });
 
-      // Replaced by consumer
-      // await API.post("submissions", {
-      //   submission_id: `${hash}`,
-      //   campaign_id: campaign.campaign_id,
-      //   photo_hash: enPhoto.data.photo_hash,
-      //   description_hash: enSubmissionDescription.data.hash,
-      //   lat: location.lat,
-      //   long: location.long,
-      // });
+      await API.post("submissions", {
+        submission_id: `${hash}`,
+        campaign_id: campaign.campaign_id,
+        photo_hash: enPhoto.data.photo_hash,
+        description_hash: enSubmissionDescription.data.hash,
+        lat: location.lat,
+        long: location.long,
+      });
 
       setTimeout(() => {
         setStatus("completed");
