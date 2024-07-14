@@ -39,6 +39,20 @@ Provide links to a live demo or video demonstration:
 
 ## Technologies Used
 
+### Backend
+
+- Web App: FastAPI, SQLAlchemy
+- Smart Contract Events Consumer: web3py, multithreading
+- Node API: Alchemy
+- Deployment: Heroku
+
+### Frontend
+
+- App: Next.js
+- BFF: Next.js
+- Transaction signature: vagmi, viem, wallectConnect
+- Deployment: Firebase
+
 ## Architecture
 
 ![System design](assets/system_design.png)
