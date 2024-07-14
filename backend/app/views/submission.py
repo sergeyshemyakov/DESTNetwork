@@ -10,7 +10,7 @@ from app.schemas import submission
 router = APIRouter()
 
 
-@router.get("/submissions/", response_model=List[submission.Submission])
+@router.get("/submissions", response_model=List[submission.Submission])
 def list_submissions(campaign_id: str,
                      user_address: str,
                      submission_status: int | None = None, 
@@ -88,3 +88,69 @@ def get_submissions_to_verify(verificator_id: str,
         lat=item.Submission.lat,
         long=item.Submission.long
     ) for item in items.all()]
+
+
+@router.post('/submissions', response_model=submission.Submission)
+def create_submission(req: submission.SubmissionRequest, session=Depends(get_db)):
+    submission_model = models.Submission(
+        submission_id=req.submission_id,
+        campaign_id=req.campaign_id,
+        photo_hash=req.photo_hash,
+        description_hash=req.description_hash,
+        status=0,
+        resolved=False,
+        lat=req.lat,
+        long=req.long
+    )
+    session.add(submission_model)
+    campaign = session.query(models.StashCampaign).filter(models.StashCampaign.campaign_id==req.campaign_id).first()
+    if campaign:
+        campaign.remained_submissions = campaign.remained_submissions - 1
+    session.commit()
+    hash = session.query(models.Description).get(req.description_hash)
+    return submission.Submission(
+        id=submission_model.id,
+        submission_id=submission_model.submission_id,
+        campaign_id=submission_model.campaign_id,
+        description=hash.content,
+        photo_url=f"/api/photos/{submission_model.photo_hash}",
+        status=submission_model.status,
+        lat=submission_model.lat,
+        long=submission_model.long,
+        resolved=submission_model.resolved,
+        state=submission.SubmissionState.DISPUTED
+    )
+
+
+@router.get('/submissions/{submission_id}/accept')
+def accept_submission(submission_id: str, session=Depends(get_db)):
+    submission = session.query(models.Submission).filter(models.Submission.submission_id==submission_id).first()
+    if submission:
+        submission.status = 1
+        session.commit()
+    return {"success": True}
+
+
+@router.get('/submissions/{submission_id}/reject')
+def accept_submission(submission_id: str, session=Depends(get_db)):
+    submission = session.query(models.Submission).filter(models.Submission.submission_id==submission_id).first()
+    if submission:
+        submission.status = 2
+        session.commit()
+    return {"success": True}
+
+
+@router.get('/submissions/{submission_id}/dispute')
+def accept_submission(submission_id: str, description_hash: str, disputer: str,
+                      session=Depends(get_db)):
+    submission = session.query(models.Submission).filter(models.Submission.submission_id==submission_id).first()
+    if submission:
+        dispute = models.Dispute(
+            submission_id=submission_id,
+            author_address=disputer,
+            description_hash=description_hash
+        )
+        session.add(dispute)
+        submission.status = 0
+        session.commit()
+    return {"success": True}

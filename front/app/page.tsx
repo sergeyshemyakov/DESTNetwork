@@ -3,6 +3,7 @@ import { Button } from "@nextui-org/button";
 import { Block } from "@/components/Block";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { siteConfig } from "@/config/site";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -18,9 +19,11 @@ export default function Home() {
             innovative stash campaigns, strengthening your community's
             resilience and preparedness.
           </p>
-          <Button color="primary" variant="shadow" radius="full" size="lg">
-            Exprole campaigns
-          </Button>
+          <Link href="/campaigns">
+            <Button color="primary" variant="shadow" radius="full" size="lg">
+              Exprole campaigns
+            </Button>
+          </Link>
         </div>
         <div>
           <HeroSvg />

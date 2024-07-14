@@ -23,16 +23,26 @@ import { FaInfoCircle } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { API } from "@/config/api";
 import NavLink from "next/link";
-import { useWalletClient } from "wagmi";
+import { useWriteContract } from "wagmi";
+import { submissionCreateAbi } from "@/config/abi";
+import { useDestAccount } from "@/hooks/useDestAccount";
+import { ProgressModal } from "@/components/ProgressModal";
+import { submissionCreateAddress } from "@/config/addresses";
+import { useRouter } from "next/navigation";
 
 export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
   campaign,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const wallet = useWalletClient();
   const mapRef = useRef<MapRef>(null);
+  const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const { isConnected, account } = useDestAccount();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: hash, error, writeContractAsync } = useWriteContract();
+
+  const [status, setStatus] = useState<"none" | "progress" | "completed">(
+    "none"
+  );
   const [photo, setPhoto] = useState<File | null>(null);
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState<{
@@ -57,29 +67,48 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
       return;
     }
 
-    setIsLoading(true);
     const formData = new FormData();
     formData.append("image", photo);
 
     try {
+      setStatus("progress");
+
       const [enSubmissionDescription, enPhoto] = await Promise.all([
         API.post("descriptions", { content: description }),
         API.post("photos/upload", formData),
       ]);
 
-      const params = {
-        photo: enPhoto.data.hash,
-        description: enSubmissionDescription.data.hash,
-        lat: formatCoordinate(location.lat),
-        long: formatCoordinate(location.lat),
-      };
-      // Handle form submission logic here
-      console.log(params);
+      await writeContractAsync({
+        abi: submissionCreateAbi,
+        account: account.address,
+        address: submissionCreateAddress,
+        functionName: `createSubmission`,
+        args: [
+          `0x${enPhoto.data.photo_hash}`,
+          `0x${enSubmissionDescription.data.hash}`,
+          BigInt(`${formatCoordinate(location.lat)}`),
+          BigInt(`${formatCoordinate(location.long)}`),
+        ],
+      });
 
-      setIsLoading(false);
+      // Replaced by consumer
+      await API.post("submissions", {
+        submission_id: `${hash}`,
+        campaign_id: campaign.campaign_id,
+        photo_hash: enPhoto.data.photo_hash,
+        description_hash: enSubmissionDescription.data.hash,
+        lat: location.lat,
+        long: location.long,
+      });
+
+      setTimeout(() => {
+        setStatus("completed");
+        setDescription("");
+        router.push(`/campaigns/${campaign.campaign_id}/submissions`);
+      }, 1000);
     } catch (e) {
       alert("Oooops. No success. try again.");
-      setIsLoading(false);
+      setStatus("none");
     }
   };
 
@@ -120,11 +149,11 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
                 alt="category icon"
                 height={60}
                 radius="sm"
-                src="/med.png"
+                src={categories[campaign.campaign_type].icon}
                 width={60}
               />
               <h2 className="header-text text-6xl">
-                {categories[campaign.campaign_type]}
+                {categories[campaign.campaign_type].name}
               </h2>
               <NavLink href={`/campaigns/${campaign.campaign_id}/submissions`}>
                 <Button>View campaign submissions</Button>
@@ -208,21 +237,22 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
 
             <div>
               <Button
-                isLoading={isLoading}
+                isLoading={status === "progress"}
                 variant="shadow"
                 color="primary"
-                isDisabled={!wallet.isSuccess}
-                disabled={!wallet.isSuccess}
+                isDisabled={!isConnected}
+                disabled={!isConnected}
                 onClick={handleSubmit}
               >
                 Submit stashing
               </Button>
 
-              {!wallet.isSuccess && (
+              {!isConnected && (
                 <p className="mt-2 text-danger text-sm">
                   Please, connect your wallet before submission.
                 </p>
               )}
+              {error?.message}
             </div>
           </div>
         </div>
@@ -265,6 +295,13 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
           )}
         </ModalContent>
       </Modal>
+
+      <ProgressModal
+        title="Verification in progress"
+        hash={hash}
+        error={error}
+        status={status}
+      />
     </div>
   );
 };

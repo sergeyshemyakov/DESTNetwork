@@ -1,4 +1,5 @@
 "use client";
+
 import { categories } from "@/config/categories";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Button, Divider, Image, Progress } from "@nextui-org/react";
@@ -19,12 +20,12 @@ export const CampaignCard: FC<CampaignCardProps> = ({ campaign }) => {
             alt="category icon"
             height={40}
             radius="sm"
-            src="/med.png"
+            src={categories[campaign.campaign_type].icon}
             width={40}
           />
           <div className="flex flex-col">
             <p className="text-lg header-text">
-              {categories[campaign.campaign_type]}
+              {categories[campaign.campaign_type].name}
             </p>
             {/* <p className="text-small text-default-500 w-full overflow-hidden">
               {campaign.campaign_creator}
@@ -33,7 +34,7 @@ export const CampaignCard: FC<CampaignCardProps> = ({ campaign }) => {
         </div>
 
         <p className="text-lg text-primary text-right">
-          {campaign.reward}
+          {campaign.reward / Math.pow(10, 18)}
           <span className="text-sm">{campaign.token_symbol}</span>
         </p>
       </CardHeader>

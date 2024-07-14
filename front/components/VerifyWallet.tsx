@@ -1,47 +1,84 @@
 "use client";
-import { Button } from "@nextui-org/button";
-import {
-  IDKitWidget,
-  ISuccessResult,
-  VerificationLevel,
-} from "@worldcoin/idkit";
-import { useWalletClient } from "wagmi";
+import { Chip } from "@nextui-org/react";
+import { ISuccessResult } from "@worldcoin/idkit";
+import { BaseError, decodeAbiParameters, parseAbiParameters } from "viem";
+import { useWriteContract } from "wagmi";
+import { useState } from "react";
+import { verifyAbi } from "@/config/abi";
+import { IsWorldIdVerified } from "./isWorldIdVerified";
+import { verifyContractAddress } from "@/config/addresses";
+import { useDestAccount } from "@/hooks/useDestAccount";
+import { ProgressModal } from "./ProgressModal";
 
 export const VerifyWallet = () => {
-  const wallet = useWalletClient();
+  const { account, isConnected, isWorldIdEnabled, confirmVerification } =
+    useDestAccount();
+  const { data: hash, error, writeContractAsync } = useWriteContract();
 
-  // TODO: Calls your implemented server route
-  const verifyProof = async (result: ISuccessResult) => {
-    console.log(result);
+  const [status, setStatus] = useState<"none" | "progress" | "completed">(
+    "none"
+  );
+
+  const onSuccess = async (result: ISuccessResult) => {
+    if (!account.address) return;
+
+    setStatus("progress");
+
+    try {
+      await writeContractAsync({
+        abi: verifyAbi,
+        account: account.address,
+        address: verifyContractAddress,
+        functionName: `addWorldIDPoH`,
+        args: [
+          account.address,
+          BigInt(result.merkle_root),
+          BigInt(result.nullifier_hash),
+          decodeAbiParameters(
+            parseAbiParameters(`uint256[8]`),
+            result!.proof as `0x${string}`
+          )[0],
+        ],
+      });
+
+      confirmVerification();
+      setTimeout(() => {
+        setStatus("completed");
+      }, 1000);
+    } catch (e) {
+      throw new Error((e as BaseError).shortMessage);
+    }
   };
-
-  // TODO: Functionality after verifying
-  const onSuccess = () => {
-    console.log("Success");
-  };
-
-  // ...
 
   return (
-    <IDKitWidget
-      app_id="app_staging_4159351d39ed40966d0dc48bb0554ae5"
-      action="verify-wallet"
-      // On-chain only accepts Orb verifications
-      verification_level={VerificationLevel.Orb}
-      handleVerify={verifyProof}
-      onSuccess={onSuccess}
-    >
-      {({ open }) => (
-        <div className="flex items-center">
-          <Button
-            isDisabled={!wallet.isSuccess}
-            disabled={!wallet.isSuccess}
-            onClick={open}
-          >
-            Verify with World ID
-          </Button>
-        </div>
+    <>
+      {isConnected && (
+        <>
+          {isWorldIdEnabled ? (
+            <>
+              {account.address && (
+                <IsWorldIdVerified
+                  address={account.address}
+                  onSuccess={onSuccess}
+                />
+              )}
+            </>
+          ) : (
+            <div className="flex items-center">
+              <Chip variant="dot" color="warning">
+                WorldID unavailable
+              </Chip>
+            </div>
+          )}
+        </>
       )}
-    </IDKitWidget>
+
+      <ProgressModal
+        title="Verification in progress"
+        hash={hash}
+        error={error}
+        status={status}
+      />
+    </>
   );
 };

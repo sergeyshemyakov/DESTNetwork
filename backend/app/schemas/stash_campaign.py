@@ -9,7 +9,7 @@ class StashCampaign(BaseModel):
     description: str
     campaign_type: int
     campaign_creator: str
-    reward: int
+    reward: str
     reward_token: str
     token_symbol: str
     blockchain: str

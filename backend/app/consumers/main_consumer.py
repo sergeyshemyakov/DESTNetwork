@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+load_dotenv()
+
+
 from web3 import Web3
 import time
 import signal
@@ -19,8 +23,8 @@ sepolia_key = os.environ.get("BASE_SEPOLIA_RPC_KEY")
 
 CONFIGURATION =[
     {
-        "blockchain": "Sepolia Base",
-        "campaign_manager_address": "0xcDB2223C6Be2F0C233f1BD20AA5Ecf6Ac44FAD74",
+        "blockchain": "Base Sepolia",
+        "campaign_manager_address": "0x83f17DD98e20b63B8d2d33bAf7a4074E302e3C25",
         "provider_url": f"https://base-sepolia.g.alchemy.com/v2/{sepolia_key}"
     }
 ]
@@ -43,9 +47,10 @@ try:
         main_threads.append(t1)
         main_consumers.append(campaign_created_consumer)
         t1.start()
-    while not killer.kill_now:
+    while not killer.kill_now and all(x.stopped == False for x in main_consumers):
         time.sleep(1)
 finally:
+    print("Virybamesya pacani")
     for consumer in main_consumers:
        consumer.stopped = True
     for thread in main_threads:
