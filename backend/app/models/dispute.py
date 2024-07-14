@@ -8,3 +8,4 @@ class Dispute(Base):
     id = Column(Integer, primary_key=True, index=True)
     submission_id = Column(String)
     author_address = Column(String)
+    description_hash = Column(String)

@@ -120,3 +120,37 @@ def create_submission(req: submission.SubmissionRequest, session=Depends(get_db)
         resolved=submission_model.resolved,
         state=submission.SubmissionState.DISPUTED
     )
+
+
+@router.get('/submissions/{submission_id}/accept')
+def accept_submission(submission_id: str, session=Depends(get_db)):
+    submission = session.query(models.Submission).filter(models.Submission.submission_id==submission_id).first()
+    if submission:
+        submission.status = 1
+        session.commit()
+    return {"success": True}
+
+
+@router.get('/submissions/{submission_id}/reject')
+def accept_submission(submission_id: str, session=Depends(get_db)):
+    submission = session.query(models.Submission).filter(models.Submission.submission_id==submission_id).first()
+    if submission:
+        submission.status = 2
+        session.commit()
+    return {"success": True}
+
+
+@router.get('/submissions/{submission_id}/dispute')
+def accept_submission(submission_id: str, description_hash: str, disputer: str,
+                      session=Depends(get_db)):
+    submission = session.query(models.Submission).filter(models.Submission.submission_id==submission_id).first()
+    if submission:
+        dispute = models.Dispute(
+            submission_id=submission_id,
+            author_address=disputer,
+            description_hash=description_hash
+        )
+        session.add(dispute)
+        submission.status = 0
+        session.commit()
+    return {"success": True}
