@@ -167,7 +167,7 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
                 {activeTab === "verify" && popupInfo.status === 0 && (
                   <div className="flex gap-2">
                     <AcceptSubmission submission={popupInfo} />
-                    <DeclineSubmission submission={popupInfo}>
+                    <DeclineSubmission submission={popupInfo} />
                   </div>
                 )}
 
