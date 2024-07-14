@@ -34,7 +34,11 @@ Decentralized Stash Network, Destnet or DEST Network incentivizes users in a par
 
 ## Demo
 Provide links to a live demo or video demonstration:
-- [Live Demo](http://example.com)
+- [Live Demo](http://dest-network.web.app)
 - [Video Demo](http://example.com/video)
 
-## Usage
+## Technologies Used
+
+## Architecture
+
+![System design](assets/system_design.png)
