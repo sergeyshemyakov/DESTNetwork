@@ -1,0 +1,612 @@
+{
+  "compiler": {
+    "version": "0.8.26+commit.8a97fa7a"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "_campaignExpirationTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "_campaignCreator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "_category",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "_maxSubmissions",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "_reward",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IERC20",
+            "name": "_rewardToken",
+            "type": "address"
+          },
+          {
+            "internalType": "struct StashCampaign.Coordinate",
+            "name": "topLeft",
+            "type": "tuple",
+            "components": [
+              {
+                "internalType": "int256",
+                "name": "lat",
+                "type": "int256"
+              },
+              {
+                "internalType": "int256",
+                "name": "long",
+                "type": "int256"
+              }
+            ]
+          },
+          {
+            "internalType": "struct StashCampaign.Coordinate",
+            "name": "bottomRight",
+            "type": "tuple",
+            "components": [
+              {
+                "internalType": "int256",
+                "name": "lat",
+                "type": "int256"
+              },
+              {
+                "internalType": "int256",
+                "name": "long",
+                "type": "int256"
+              }
+            ]
+          },
+          {
+            "internalType": "bytes32",
+            "name": "_descriptionHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "contract ProofOfHumanity",
+            "name": "_proofOfHumanity",
+            "type": "address"
+          },
+          {
+            "internalType": "contract CampaignManager",
+            "name": "_campaignManager",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "_disputDepositAmount",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionID",
+            "type": "address",
+            "indexed": true
+          },
+          {
+            "internalType": "address",
+            "name": "Disputor",
+            "type": "address",
+            "indexed": true
+          }
+        ],
+        "type": "event",
+        "name": "Disputed",
+        "anonymous": false
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionID",
+            "type": "address",
+            "indexed": true
+          }
+        ],
+        "type": "event",
+        "name": "Resolved",
+        "anonymous": false
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submitter",
+            "type": "address",
+            "indexed": true
+          }
+        ],
+        "type": "event",
+        "name": "SubmissionCreated",
+        "anonymous": false
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionID",
+            "type": "address",
+            "indexed": true
+          },
+          {
+            "internalType": "enum StashCampaign.SubmissionStatus",
+            "name": "status",
+            "type": "uint8",
+            "indexed": false
+          },
+          {
+            "internalType": "uint256",
+            "name": "minResolveTimestamp",
+            "type": "uint256",
+            "indexed": false
+          }
+        ],
+        "type": "event",
+        "name": "SubmissionFinalized",
+        "anonymous": false
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionID",
+            "type": "address",
+            "indexed": true
+          },
+          {
+            "internalType": "address",
+            "name": "verifier",
+            "type": "address",
+            "indexed": true
+          }
+        ],
+        "type": "event",
+        "name": "VoteRequested",
+        "anonymous": false
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionID",
+            "type": "address",
+            "indexed": true
+          },
+          {
+            "internalType": "address",
+            "name": "verifier",
+            "type": "address",
+            "indexed": true
+          }
+        ],
+        "type": "event",
+        "name": "Voted",
+        "anonymous": false
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "DISPUTE_WINDOW",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "MIN_SUBMISSION_DURATION",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "VERIFICATION_ROUND_SIZE",
+        "outputs": [
+          {
+            "internalType": "uint8",
+            "name": "",
+            "type": "uint8"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "campaignArea",
+        "outputs": [
+          {
+            "internalType": "int256",
+            "name": "lat",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "long",
+            "type": "int256"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "campaignCreator",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "campaignExpirationTimestamp",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "campaignManager",
+        "outputs": [
+          {
+            "internalType": "contract CampaignManager",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "category",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "dummySubmitter",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "createDummySubmission"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "_photoHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "_descriptionHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "int256",
+            "name": "_lat",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "_long",
+            "type": "int256"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "createSubmission"
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "descriptionHash",
+        "outputs": [
+          {
+            "internalType": "bytes32",
+            "name": "",
+            "type": "bytes32"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "disputDepositAmount",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionId",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "disputorNotesHash",
+            "type": "bytes32"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "dispute"
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "maxSubmissions",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "proofOfHumanity",
+        "outputs": [
+          {
+            "internalType": "contract ProofOfHumanity",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "recoupCampaignTokens"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionId",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "resolve"
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "reward",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "rewardToken",
+        "outputs": [
+          {
+            "internalType": "contract IERC20",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "submissionIds",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "submissions",
+        "outputs": [
+          {
+            "internalType": "bytes32",
+            "name": "photoHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "descriptionHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minResolveTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockedReward",
+            "type": "uint256"
+          },
+          {
+            "internalType": "struct StashCampaign.Coordinate",
+            "name": "location",
+            "type": "tuple",
+            "components": [
+              {
+                "internalType": "int256",
+                "name": "lat",
+                "type": "int256"
+              },
+              {
+                "internalType": "int256",
+                "name": "long",
+                "type": "int256"
+              }
+            ]
+          },
+          {
+            "internalType": "enum StashCampaign.SubmissionStatus",
+            "name": "status",
+            "type": "uint8"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "submissionId",
+            "type": "address"
+          },
+          {
+            "internalType": "enum StashCampaign.VoteOpinion",
+            "name": "opinion",
+            "type": "uint8"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "vote"
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "remappings": [
+      "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+      "@world-id/=lib/world-id-starter-hardhat/contracts/interfaces/",
+      "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+      "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+      "forge-std/=lib/forge-std/src/",
+      "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+      "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+      "world-id-starter-hardhat/=lib/world-id-starter-hardhat/contracts/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "compilationTarget": {
+      "src/StashCampaignFlat.sol": "StashCampaign"
+    },
+    "evmVersion": "paris",
+    "libraries": {}
+  },
+  "sources": {
+    "src/StashCampaignFlat.sol": {
+      "keccak256": "0xfd6274d3ce744afdf4935f487b1f6366480a115d424af2be83e731488b22c1af",
+      "urls": [
+        "bzz-raw://944f564111cfdee1cdc8757f648f73b6642b157f564931b7a28e121da828724b",
+        "dweb:/ipfs/QmQuWJcC3A18z4JCtizfyMfcQVLWSxQLp3RoCdh3D4hRgP"
+      ],
+      "license": "MIT"
+    }
+  },
+  "version": 1
+}

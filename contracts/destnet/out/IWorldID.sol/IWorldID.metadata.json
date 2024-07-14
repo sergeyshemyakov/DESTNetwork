@@ -1,0 +1,103 @@
+{
+  "compiler": {
+    "version": "0.8.26+commit.8a97fa7a"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "root",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "groupId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "signalHash",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nullifierHash",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "externalNullifierHash",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[8]",
+            "name": "proof",
+            "type": "uint256[8]"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "verifyProof"
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {
+        "verifyProof(uint256,uint256,uint256,uint256,uint256,uint256[8])": {
+          "details": "Note that a double-signaling check is not included here, and should be carried by the caller.",
+          "params": {
+            "externalNullifierHash": "A keccak256 hash of the external nullifier",
+            "groupId": "The id of the Semaphore group",
+            "nullifierHash": "The nullifier hash",
+            "proof": "The zero-knowledge proof",
+            "root": "The of the Merkle tree",
+            "signalHash": "A keccak256 hash of the Semaphore signal"
+          }
+        }
+      },
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {
+        "verifyProof(uint256,uint256,uint256,uint256,uint256,uint256[8])": {
+          "notice": "Reverts if the zero-knowledge proof is invalid."
+        }
+      },
+      "version": 1
+    }
+  },
+  "settings": {
+    "remappings": [
+      "@world-id/=lib/world-id-starter-hardhat/contracts/interfaces/",
+      "forge-std/=lib/forge-std/src/",
+      "world-id-starter-hardhat/=lib/world-id-starter-hardhat/contracts/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "compilationTarget": {
+      "lib/world-id-starter-hardhat/contracts/interfaces/IWorldID.sol": "IWorldID"
+    },
+    "evmVersion": "paris",
+    "libraries": {}
+  },
+  "sources": {
+    "lib/world-id-starter-hardhat/contracts/interfaces/IWorldID.sol": {
+      "keccak256": "0x20fc12dea0b817fb8b7bc1a851082676ed2dcb844d3673d60aa5570da3e1b62e",
+      "urls": [
+        "bzz-raw://9c61c47f91672804ea144263ab5c2cf42278a29299d5f690d67bfe175e017fc0",
+        "dweb:/ipfs/QmZsDPvxVwZdzu3QcuzaCZMn7Kn2nGgzBHeCmH2v6aAJTS"
+      ],
+      "license": "MIT"
+    }
+  },
+  "version": 1
+}

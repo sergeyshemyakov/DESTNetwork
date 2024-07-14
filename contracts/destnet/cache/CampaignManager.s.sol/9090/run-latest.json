@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "rpc": "https://testnet.inco.org"
+    },
+    {
+      "rpc": "https://testnet.inco.org"
+    },
+    {
+      "rpc": "https://testnet.inco.org"
+    },
+    {
+      "rpc": "https://testnet.inco.org"
+    },
+    {
+      "rpc": "https://testnet.inco.org"
+    },
+    {
+      "rpc": "https://testnet.inco.org"
+    },
+    {
+      "rpc": "https://testnet.inco.org"
+    },
+    {
+      "rpc": "https://testnet.inco.org"
+    }
+  ]
+}

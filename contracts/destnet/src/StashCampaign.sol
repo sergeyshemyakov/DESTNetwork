@@ -165,15 +165,9 @@ contract StashCampaign {
     }
 
     // Creates a submission for the msg.sender. Msg.sender serves as submissionID
-    function createSubmission(bytes32 _photoHash, bytes32 _descriptionHash, Coordinate memory _location) public {
-        require(
-            _location.lat >= campaignArea[1].lat && _location.lat <= campaignArea[0].lat,
-            "Location outside of area: latitude"
-        );
-        require(
-            _location.long >= campaignArea[0].long && _location.long <= campaignArea[1].long,
-            "Location outside of area: longitude"
-        );
+    function createSubmission(bytes32 _photoHash, bytes32 _descriptionHash, int256 _lat, int256 _long) public {
+        require(_lat >= campaignArea[1].lat && _lat <= campaignArea[0].lat, "Location outside of area: latitude");
+        require(_long >= campaignArea[0].long && _long <= campaignArea[1].long, "Location outside of area: longitude");
         require(submissionIds.length < maxSubmissions, "Reached the limit of submissions");
         require(submissions[msg.sender].minResolveTimestamp == 0, "Submission already created from this address");
         require(_photoHash != 0, "Photo hash can not be empty");
@@ -184,7 +178,7 @@ contract StashCampaign {
         submissions[msg.sender].descriptionHash = _descriptionHash;
         submissions[msg.sender].minResolveTimestamp = block.timestamp + MIN_SUBMISSION_DURATION;
         submissions[msg.sender].lockedReward = reward;
-        submissions[msg.sender].location = _location;
+        submissions[msg.sender].location = Coordinate(_lat, _long);
         submissions[msg.sender].status = SubmissionStatus.Disputed;
         submissionIds.push(msg.sender);
         emit SubmissionCreated(msg.sender);

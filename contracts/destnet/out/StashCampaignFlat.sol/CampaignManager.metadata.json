@@ -1,0 +1,243 @@
+{
+  "compiler": {
+    "version": "0.8.26+commit.8a97fa7a"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [
+          {
+            "internalType": "contract ProofOfHumanity",
+            "name": "_proofOfHumanity",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "campaign",
+            "type": "address",
+            "indexed": true
+          }
+        ],
+        "type": "event",
+        "name": "CampaignCreated",
+        "anonymous": false
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "CAMPAIGN_DURATION",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "DISPUT_DEPOSIT_AMOUNT",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "campaigns",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "category",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSubmissions",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reward",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IERC20",
+            "name": "rewardToken",
+            "type": "address"
+          },
+          {
+            "internalType": "struct StashCampaign.Coordinate",
+            "name": "topLeft",
+            "type": "tuple",
+            "components": [
+              {
+                "internalType": "int256",
+                "name": "lat",
+                "type": "int256"
+              },
+              {
+                "internalType": "int256",
+                "name": "long",
+                "type": "int256"
+              }
+            ]
+          },
+          {
+            "internalType": "struct StashCampaign.Coordinate",
+            "name": "bottomRight",
+            "type": "tuple",
+            "components": [
+              {
+                "internalType": "int256",
+                "name": "lat",
+                "type": "int256"
+              },
+              {
+                "internalType": "int256",
+                "name": "long",
+                "type": "int256"
+              }
+            ]
+          },
+          {
+            "internalType": "bytes32",
+            "name": "descriptionHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "dummy1",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "dummy2",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "dummy3",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "createCampaign"
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "deployer",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "proofOfHumanity",
+        "outputs": [
+          {
+            "internalType": "contract ProofOfHumanity",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "campaign",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "registerCampaign"
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "remappings": [
+      "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+      "@world-id/=lib/world-id-starter-hardhat/contracts/interfaces/",
+      "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+      "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+      "forge-std/=lib/forge-std/src/",
+      "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+      "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+      "world-id-starter-hardhat/=lib/world-id-starter-hardhat/contracts/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "compilationTarget": {
+      "src/StashCampaignFlat.sol": "CampaignManager"
+    },
+    "evmVersion": "paris",
+    "libraries": {}
+  },
+  "sources": {
+    "src/StashCampaignFlat.sol": {
+      "keccak256": "0xfd6274d3ce744afdf4935f487b1f6366480a115d424af2be83e731488b22c1af",
+      "urls": [
+        "bzz-raw://944f564111cfdee1cdc8757f648f73b6642b157f564931b7a28e121da828724b",
+        "dweb:/ipfs/QmQuWJcC3A18z4JCtizfyMfcQVLWSxQLp3RoCdh3D4hRgP"
+      ],
+      "license": "MIT"
+    }
+  },
+  "version": 1
+}

@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    },
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    },
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    },
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    },
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    },
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    },
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    },
+    {
+      "rpc": "https://rpc-testnet.morphl2.io"
+    }
+  ]
+}

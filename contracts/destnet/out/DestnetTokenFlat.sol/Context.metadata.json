@@ -1,0 +1,54 @@
+{
+  "compiler": {
+    "version": "0.8.26+commit.8a97fa7a"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "remappings": [
+      "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+      "@world-id/=lib/world-id-starter-hardhat/contracts/interfaces/",
+      "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+      "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+      "forge-std/=lib/forge-std/src/",
+      "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+      "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+      "world-id-starter-hardhat/=lib/world-id-starter-hardhat/contracts/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "compilationTarget": {
+      "src/DestnetTokenFlat.sol": "Context"
+    },
+    "evmVersion": "paris",
+    "libraries": {}
+  },
+  "sources": {
+    "src/DestnetTokenFlat.sol": {
+      "keccak256": "0x08115390a4da08082c315d5cc465e9635e06606c36de901b8086f6b006371aba",
+      "urls": [
+        "bzz-raw://c94d16c4559f5e24f5a32140a7cae14e6be4d993bc20ceec43aee46a689b4dac",
+        "dweb:/ipfs/QmW1K7jDFK2b9p4PqTToRPkMwpwNr1SyeDki2KCbj2LPR4"
+      ],
+      "license": "MIT"
+    }
+  },
+  "version": 1
+}

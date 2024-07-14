@@ -1,0 +1,175 @@
+{
+  "compiler": {
+    "version": "0.8.26+commit.8a97fa7a"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [
+          {
+            "internalType": "contract IWorldID",
+            "name": "_worldId",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "_appId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "_action",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "userAddress",
+            "type": "address",
+            "indexed": true
+          }
+        ],
+        "type": "event",
+        "name": "addedPoH",
+        "anonymous": false
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "userAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "root",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nullifierHash",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[8]",
+            "name": "proof",
+            "type": "uint256[8]"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "name": "addWorldIDPoH"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "userAddress",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "checkPoH",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ]
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "knownPoH",
+        "outputs": [
+          {
+            "internalType": "enum ProofOfHumanity.ProofOfHumanityEnum",
+            "name": "",
+            "type": "uint8"
+          }
+        ]
+      },
+      {
+        "inputs": [],
+        "stateMutability": "view",
+        "type": "function",
+        "name": "worldId",
+        "outputs": [
+          {
+            "internalType": "contract IWorldID",
+            "name": "",
+            "type": "address"
+          }
+        ]
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "remappings": [
+      "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+      "@world-id/=lib/world-id-starter-hardhat/contracts/interfaces/",
+      "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+      "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+      "forge-std/=lib/forge-std/src/",
+      "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+      "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+      "world-id-starter-hardhat/=lib/world-id-starter-hardhat/contracts/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "compilationTarget": {
+      "src/ProofOfHumanity.sol": "ProofOfHumanity"
+    },
+    "evmVersion": "paris",
+    "libraries": {}
+  },
+  "sources": {
+    "lib/world-id-starter-hardhat/contracts/interfaces/IWorldID.sol": {
+      "keccak256": "0x20fc12dea0b817fb8b7bc1a851082676ed2dcb844d3673d60aa5570da3e1b62e",
+      "urls": [
+        "bzz-raw://9c61c47f91672804ea144263ab5c2cf42278a29299d5f690d67bfe175e017fc0",
+        "dweb:/ipfs/QmZsDPvxVwZdzu3QcuzaCZMn7Kn2nGgzBHeCmH2v6aAJTS"
+      ],
+      "license": "MIT"
+    },
+    "src/ProofOfHumanity.sol": {
+      "keccak256": "0xbf77163100a4336ac820491ead5f63dc0967e862dd5c4a873d243859cd2585e9",
+      "urls": [
+        "bzz-raw://c4ca3a96be593c2a0e868b7048da80fe710ccafcea77e0d1b43566bae28433f7",
+        "dweb:/ipfs/QmSzDkH2im8cmTN9x8qTvnsSg3mtKmVgH4n9we2R9y6co3"
+      ],
+      "license": "MIT"
+    }
+  },
+  "version": 1
+}
