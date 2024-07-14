@@ -90,7 +90,7 @@ def get_submissions_to_verify(verificator_id: str,
     ) for item in items.all()]
 
 
-@router.post('submissions', response_model=submission.Submission)
+@router.post('/submissions/', response_model=submission.Submission)
 def create_submission(req: submission.SubmissionRequest, session=Depends(get_db)):
     submission_model = models.Submission(
         submission_id=req.submission_id,
@@ -103,6 +103,9 @@ def create_submission(req: submission.SubmissionRequest, session=Depends(get_db)
         long=req.long
     )
     session.add(submission_model)
+    campaign = session.query(models.StashCampaign).filter(models.StashCampaign.campaign_id==req.campaign_id).first()
+    if campaign:
+        campaign.remained_submissions = campaign.remained_submissions - 1
     session.commit()
     hash = session.query(models.Description).get(req.description_hash)
     return submission.Submission(
