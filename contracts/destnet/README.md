@@ -1,66 +1,34 @@
-## Foundry
+## Onchain logic
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Blockchain component of DEST Network consists of 4 smart contracts:
 
-Foundry consists of:
+- [DestnetToken.sol](./src/DestnetToken.sol) is a ERC-20 token created to simplify testing.
+- [ProofOfHumanity.sol](./src/ProofOfHumanity.sol) is an onchain registry of users verified with proofs of humanity for more relaxed requirements. Currently only works with World ID on chains where World ID is supported.
+- [CampaignManager.sol](./src/CampaignManager.sol) is a single point of reference for all Stash Campaigns.
+- [StashCampaign.sol](./src/StashCampaign.sol) represents instances of stash campaigns. Each Stash Campaign smart contract manages the lifecycle of stash submissions, including all voting logic. 
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## ProofOfHumanity
 
-## Documentation
+Currently has a function to verify a user with onchain World ID. After a user is verified, their submissions can not be disputed by other users.
 
-https://book.getfoundry.sh/
+## CampaignManager
 
-## Usage
+Campaign Manager provides an intergace to create Stash Campaigns by giving all necessary data and transferring ERC-20 reward tokens to the campaign.
 
-### Build
+## StashCampaign
 
-```shell
-$ forge build
-```
+### Submit Stash
 
-### Test
+Stash campaign allows creating stashes with all necessary data. When a stash is created, verifiers are randomly assigned from the existing submitters.
 
-```shell
-$ forge test
-```
+### Vote on submissions
 
-### Format
+Users are automatically assigned submission, on which they must vote. They must cast all required votes to receive their reward.
 
-```shell
-$ forge fmt
-```
+### Dispute
 
-### Gas Snapshots
+After a submission is finalized (i.e. accepted or rejected), it has a dispute period in which everyone can dispute the decision by locking a deposit. Disputing provides an option for independent observers to secure DEST Network.
 
-```shell
-$ forge snapshot
-```
+### Resolve submission and manage penalties and rewards
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+After the dispute period, the submission can be resolved. Then every incorrect voter, disputor and fault submitter is penalized, and these tokens are shared among all correct voters and disputors. This onchain logic creates socio-economic incentives to vote correctly and open disputes if an incorrect decision is observed.
