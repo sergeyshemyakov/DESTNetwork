@@ -1,5 +1,4 @@
 interface StashCampaign {
-  id: string;
   campaign_id: string;
   description: string;
   campaign_creator: string;

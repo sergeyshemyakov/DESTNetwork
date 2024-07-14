@@ -16,6 +16,7 @@ const CustomFileInput: React.FC<CustomFileInputProps> = ({ onFileChange }) => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event);
     if (event.target.files && event.target.files[0]) {
       onFileChange(event.target.files[0]);
       setFileName(event.target.files[0].name);

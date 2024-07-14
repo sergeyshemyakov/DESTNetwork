@@ -25,10 +25,10 @@ import {
 import { Key, useEffect, useMemo, useState } from "react";
 import { API } from "@/config/api";
 import Pin from "../../components/Pin";
-import { FaCheck, FaRetweet, FaTimes } from "react-icons/fa";
+import { FaRetweet, FaTimes } from "react-icons/fa";
 import { SubmissionsStates } from "@/config/categories";
-import { IoMdRefresh } from "react-icons/io";
 import { useWalletClient } from "wagmi";
+import { AcceptSubmission } from "./AcceptSubmission";
 
 export default function Submissions({ campaignId }: { campaignId: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -104,20 +104,15 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
   };
 
   return (
-    <Block
-      title={`${campaignId} submissions`}
-      subtitle={
-        <p className="text-default-500 text-lg">
+    <Block title={`${campaignId} submissions`}>
+      <div className="flex justify-between items-end">
+        <p className="text-default-500 text-lg max-w-[600px]">
           Here you can view all submissions, verify other users' submissions,
           and dispute any incorrect entries. Your active participation helps
           ensure the accuracy and reliability of the resources stashed for
           community aid.
         </p>
-      }
-    >
-      <div className="relative flex w-full flex-col mt-8">
         <Tabs
-          className="mb-2"
           variant="bordered"
           size="lg"
           aria-label="Submissions"
@@ -129,7 +124,8 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
           <Tab key="finalized" title="Finalized"></Tab>
           <Tab key="resolved" title="Resolved"></Tab>
         </Tabs>
-
+      </div>
+      <div className="relative flex w-full flex-col mt-8">
         <div className="w-full rounded-lg overflow-hidden">
           <Map
             initialViewState={{
@@ -169,14 +165,7 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
 
                 {activeTab === "verify" && popupInfo.status === 0 && (
                   <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="bordered"
-                      color="success"
-                      startContent={<FaCheck />}
-                    >
-                      Accept
-                    </Button>
+                    <AcceptSubmission submission={popupInfo} />
                     <Button
                       size="sm"
                       variant="bordered"
