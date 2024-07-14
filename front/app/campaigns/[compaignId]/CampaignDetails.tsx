@@ -91,6 +91,16 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
         ],
       });
 
+      // Replaced by consumer
+      await API.post("submissions", {
+        submission_id: `${hash}`,
+        campaign_id: campaign.campaign_id,
+        photo_hash: enPhoto.data.photo_hash,
+        description_hash: enSubmissionDescription.data.hash,
+        lat: location.lat,
+        long: location.long,
+      });
+
       setTimeout(() => {
         setStatus("completed");
         setDescription("");

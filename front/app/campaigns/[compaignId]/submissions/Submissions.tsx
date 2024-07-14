@@ -1,18 +1,7 @@
 "use client";
 
 import { Block } from "@/components/Block";
-import {
-  Button,
-  Image,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  Tab,
-  Tabs,
-  Textarea,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Image, Tab, Tabs } from "@nextui-org/react";
 import {
   FullscreenControl,
   GeolocateControl,
@@ -25,39 +14,37 @@ import {
 import { Key, useEffect, useMemo, useState } from "react";
 import { API } from "@/config/api";
 import Pin from "../../components/Pin";
-import { FaRetweet, FaTimes } from "react-icons/fa";
 import { SubmissionsStates } from "@/config/categories";
-import { useWalletClient } from "wagmi";
 import { AcceptSubmission } from "./AcceptSubmission";
 import { DeclineSubmission } from "./DeclineSubmission";
+import { useDestAccount } from "@/hooks/useDestAccount";
+import { ReopenDispute } from "./ReopenDispute";
+import { BiLoaderAlt } from "react-icons/bi";
 
 export default function Submissions({ campaignId }: { campaignId: string }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const wallet = useWalletClient();
+  const { isConnected, account } = useDestAccount();
 
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [popupInfo, setPopupInfo] = useState<Submission | null>(null);
   const [activeTab, setActiveTab] = useState<string>("verify");
-  const [description, setDescription] = useState("");
-  const [isReopeningDispute, setIsReopeningDispute] = useState(false);
   const [isSubmissionsLoading, setIsSubmissionsLoading] = useState(false);
 
   const getData = async () => {
-    if (!wallet.isSuccess) return;
+    if (!isConnected) return;
 
     setIsSubmissionsLoading(true);
     const { data } = await API.get(
-      `submissions?campaign_id=${campaignId}&user_address=${wallet.data.account.address}`
+      `submissions?campaign_id=${campaignId}&user_address=${account.address}`
     );
     setSubmissions(data);
-    setIsSubmissionsLoading(false);
+    // setIsSubmissionsLoading(false);
   };
 
   useEffect(() => {
-    if (wallet.isSuccess) {
+    if (isConnected) {
       getData();
     }
-  }, [wallet.isSuccess]);
+  }, [isConnected]);
 
   const pins = useMemo(
     () =>
@@ -87,25 +74,17 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
     setPopupInfo(null);
   };
 
-  const reopenDispute = async (e: any) => {
-    e.preventDefault();
-    setIsReopeningDispute(true);
-
-    const { data: descriptionHash } = await API.post("descriptions", {
-      content: description,
-    });
-
-    // TODO: web3
-    console.log(descriptionHash.hash);
-
-    await getData();
-    setIsReopeningDispute(false);
-    onClose();
-    setPopupInfo(null);
-  };
-
   return (
-    <Block title={`${campaignId} submissions`}>
+    <Block
+      title={
+        <div className="flex gap-1 flex-col mb-6">
+          <h2 className="header-text text-6xl flex gap-4 items-center">
+            Submissions
+          </h2>
+          <p className="text-primary italic">(Campaign: {campaignId})</p>
+        </div>
+      }
+    >
       <div className="flex justify-between items-end">
         <p className="text-default-500 text-lg max-w-[600px]">
           Here you can view all submissions, verify other users' submissions,
@@ -127,6 +106,16 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
         </Tabs>
       </div>
       <div className="relative flex w-full flex-col mt-8">
+        {isSubmissionsLoading && (
+          <div className="absolute flex justify-center items-center w-full h-full bg-background opacity-80">
+            <p className="flex text-lg items-center">
+              <span className="animate-spin mr-2">
+                <BiLoaderAlt />
+              </span>{" "}
+              Loading...
+            </p>
+          </div>
+        )}
         <div className="w-full rounded-lg overflow-hidden">
           <Map
             initialViewState={{
@@ -172,65 +161,13 @@ export default function Submissions({ campaignId }: { campaignId: string }) {
                 )}
 
                 {activeTab === "finalized" && (
-                  <Button
-                    size="sm"
-                    variant="bordered"
-                    color="warning"
-                    startContent={<FaRetweet />}
-                    onClick={onOpen}
-                  >
-                    Reopen dispute
-                  </Button>
+                  <ReopenDispute submission={popupInfo} onSuccess={getData} />
                 )}
               </Popup>
             )}
           </Map>
         </div>
       </div>
-
-      <Modal backdrop="blur" size="md" isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>
-                <h3 className="header-text">Reopen dispute</h3>
-              </ModalHeader>
-              <ModalBody className="pb-4">
-                <form onSubmit={reopenDispute}>
-                  <Textarea
-                    required
-                    labelPlacement="outside"
-                    variant="bordered"
-                    rows={4}
-                    value={description}
-                    label="Why do you want to reopen dispute?"
-                    className="mb-4"
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="light"
-                      disabled={isReopeningDispute}
-                      type="button"
-                      onClick={onClose}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      color="primary"
-                      isLoading={isReopeningDispute}
-                      disabled={isReopeningDispute}
-                      type="submit"
-                    >
-                      Reopen
-                    </Button>
-                  </div>
-                </form>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </Block>
   );
 }

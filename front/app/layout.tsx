@@ -48,15 +48,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
                 {children}
               </main>
-              <footer className="bg-gray-800 text-white py-4">
-                <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+              <footer className="py-4 mt-8">
+                <div className="container mx-auto max-w-7xl pt-16 px-6 flex flex-col md:flex-row justify-between items-center">
                   <div className="text-center md:text-left">
                     <h1 className="text-xl font-bold">Dest Network</h1>
                     <p className="text-sm">
                       Secure Resources. Build Community Aid.
                     </p>
                   </div>
-                  <div className="flex space-x-4 mt-4 md:mt-0">
+                  {/* <div className="flex space-x-4 mt-4 md:mt-0">
                     <a href="/about" className="text-sm hover:text-gray-400">
                       About
                     </a>
@@ -75,7 +75,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                     >
                       Terms of Service
                     </a>
-                  </div>
+                  </div> */}
                   <div className="flex space-x-4 mt-4 md:mt-0">
                     <a
                       href="https://twitter.com"
