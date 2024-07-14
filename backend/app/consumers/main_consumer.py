@@ -23,8 +23,8 @@ sepolia_key = os.environ.get("BASE_SEPOLIA_RPC_KEY")
 
 CONFIGURATION =[
     {
-        "blockchain": "Sepolia Base",
-        "campaign_manager_address": "0x53B4fDE7ddB5eF146f0667bAE532B3f1cF7d6Dcb",
+        "blockchain": "Base Sepolia",
+        "campaign_manager_address": "0x83f17DD98e20b63B8d2d33bAf7a4074E302e3C25",
         "provider_url": f"https://base-sepolia.g.alchemy.com/v2/{sepolia_key}"
     }
 ]
