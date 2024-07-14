@@ -113,5 +113,7 @@ def create_submission(req: submission.SubmissionRequest, session=Depends(get_db)
         photo_url=f"/api/photos/{submission_model.photo_hash}",
         status=submission_model.status,
         lat=submission_model.lat,
-        long=submission_model.long
+        long=submission_model.long,
+        resolved=submission_model.resolved,
+        state=submission.SubmissionState.DISPUTED
     )
