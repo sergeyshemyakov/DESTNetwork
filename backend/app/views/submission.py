@@ -88,3 +88,30 @@ def get_submissions_to_verify(verificator_id: str,
         lat=item.Submission.lat,
         long=item.Submission.long
     ) for item in items.all()]
+
+
+@router.post('submissions', response_model=submission.Submission)
+def create_submission(req: submission.SubmissionRequest, session=Depends(get_db)):
+    submission_model = models.Submission(
+        submission_id=req.submission_id,
+        campaign_id=req.campaign_id,
+        photo_hash=req.photo_hash,
+        description_hash=req.description_hash,
+        status=0,
+        resolved=False,
+        lat=req.lat,
+        long=req.long
+    )
+    session.add(submission_model)
+    session.commit()
+    hash = session.query(models.Description).get(req.description_hash)
+    return submission.Submission(
+        id=submission_model.id,
+        submission_id=submission_model.submission_id,
+        campaign_id=submission_model.campaign_id,
+        description=hash.content,
+        photo_url=f"/api/photos/{submission_model.photo_hash}",
+        status=submission_model.status,
+        lat=submission_model.lat,
+        long=submission_model.long
+    )

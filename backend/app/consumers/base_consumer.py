@@ -16,5 +16,5 @@ class BaseConsumer():
         self.event_filter = None
         self.consumer_name = "base_consumer"
         self.session = scoped_session(sessionmaker(bind=engine))()
-        self.poll_interval=5
+        self.poll_interval=10
         self.stopped = False

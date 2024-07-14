@@ -29,26 +29,25 @@ class CampaignEventConsumer(BaseConsumer):
                 for event in self.submission_created_event_filter.get_new_entries():
                     self.log_event(event)
                     self.handle_submission_creation(event)
-                time.sleep(1)
+                time.sleep(3)
                 for event in self.submission_disputed_event_filter.get_new_entries():
                     self.log_event(event)
                     self.handle_submission_dispution(event)
-                time.sleep(1)
+                time.sleep(3)
                 for event in self.submission_finalized_event_filter.get_new_entries():
                     self.log_event(event)
                     self.handle_submission_finalization(event)
-                time.sleep(1)
+                time.sleep(3)
                 for event in self.submission_resolved_event_filter.get_new_entries():
                     self.log_event(event)
                     self.handle_submission_resolving(event)
-                time.sleep(1)
+                time.sleep(3)
                 for event in self.submission_vote_requested_event_filter.get_new_entries():
                     self.log_event(event)
                     self.handle_vote_request(event)
                 for event in self.submission_voted_event_filter.get_new_entries():
                     self.log_event(event)
                     self.handle_voted(event)
-                time.sleep(1)
                 time.sleep(self.poll_interval)
         finally:
             print("virubaem mikrochela")
