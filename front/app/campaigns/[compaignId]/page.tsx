@@ -8,13 +8,10 @@ interface CampaignPageProps {
 
 const CampaignPage = async ({ params }: CampaignPageProps) => {
   const { compaignId } = params;
-  const { data: campaign } = await API.get(`stash-campaigns/${compaignId}`);
 
-  if (!campaign) {
-    notFound();
-  }
+  if (!compaignId) return;
 
-  return <CampaignDetails campaign={campaign} />;
+  return <CampaignDetails compaignId={compaignId} />;
 };
 
 export default CampaignPage;

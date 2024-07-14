@@ -10,22 +10,22 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Campaigns",
+      label: "Stash Campaigns",
       href: "/campaigns",
     },
   ],
   mainCards: [
     {
-      title: "Secure resources and build community aid",
-      text: "By participating in stash campaigns, you help secure essential resources and strengthen community aid efforts, ensuring readiness in times of need.",
+      title: "Secure resources. Build community aid.",
+      text: "DEST incentivizes users in a particular area to create stashes of some items, to prepare for a natural disaster (medicine, inflatable boats, radio receivers).      ",
     },
     {
-      title: "Secure resources and build community aid",
-      text: "By participating in stash campaigns, you help secure essential resources and strengthen community aid efforts, ensuring readiness in times of need.",
+      title: "Destnet a DePIN (Decentrilized Public Infrastructure Network)",
+      text: "Destnet a DePIN project, where the idea of a public infrastructure is expanded beyond usual use cases.",
     },
     {
-      title: "Secure resources and build community aid",
-      text: "By participating in stash campaigns, you help secure essential resources and strengthen community aid efforts, ensuring readiness in times of need.",
+      title: "Social consensus. Independent verification",
+      text: "Correctness of everything rests on the social consensus: submitted stashes are verified by other users and independent disputors.",
     },
   ],
   links: {

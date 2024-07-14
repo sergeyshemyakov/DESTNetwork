@@ -30,11 +30,8 @@ import { ProgressModal } from "@/components/ProgressModal";
 import { submissionCreateAddress } from "@/config/addresses";
 import { useRouter } from "next/navigation";
 
-export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
-  campaign,
-}) => {
+export const CampaignDetails: FC<{ compaignId: string }> = ({ compaignId }) => {
   const mapRef = useRef<MapRef>(null);
-  const router = useRouter();
 
   const { isConnected, account } = useDestAccount();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -45,10 +42,18 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
   );
   const [photo, setPhoto] = useState<File | null>(null);
   const [description, setDescription] = useState("");
+  const [campaign, setCampaign] = useState<StashCampaign>();
   const [location, setLocation] = useState<{
     lat: number;
     long: number;
   } | null>(null);
+
+  const getData = async () => {
+    const { data } = await API.get(
+      `stash-campaigns/${compaignId}?blockchain=${account.chainId}`
+    );
+    setCampaign(data);
+  };
 
   const handlePhotoChange = (file: File | null) => {
     setPhoto(file);
@@ -62,7 +67,13 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
   };
 
   const handleSubmit = async () => {
-    if (!photo || !location?.lat || !location.long || !description) {
+    if (
+      !photo ||
+      !location?.lat ||
+      !location.long ||
+      !description ||
+      !campaign
+    ) {
       // todo: add validaton message to the form
       return;
     }
@@ -78,33 +89,36 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
         API.post("photos/upload", formData),
       ]);
 
-      await writeContractAsync({
-        abi: submissionCreateAbi,
-        account: account.address,
-        address: submissionCreateAddress,
-        functionName: `createSubmission`,
-        args: [
-          `0x${enPhoto.data.photo_hash}`,
-          `0x${enSubmissionDescription.data.hash}`,
-          BigInt(`${formatCoordinate(location.lat)}`),
-          BigInt(`${formatCoordinate(location.long)}`),
-        ],
-      });
+      // await writeContractAsync({
+      //   abi: submissionCreateAbi,
+      //   account: account.address,
+      //   address: submissionCreateAddress,
+      //   functionName: `createSubmission`,
+      //   args: [
+      //     `0x${enPhoto.data.photo_hash}`,
+      //     `0x${enSubmissionDescription.data.hash}`,
+      //     BigInt(`${formatCoordinate(location.lat)}`),
+      //     BigInt(`${formatCoordinate(location.long)}`),
+      //   ],
+      // });
 
       // Replaced by consumer
-      await API.post("submissions", {
-        submission_id: `${hash}`,
-        campaign_id: campaign.campaign_id,
-        photo_hash: enPhoto.data.photo_hash,
-        description_hash: enSubmissionDescription.data.hash,
-        lat: location.lat,
-        long: location.long,
-      });
+      // await API.post("submissions", {
+      //   submission_id: `${hash}`,
+      //   campaign_id: campaign.campaign_id,
+      //   photo_hash: enPhoto.data.photo_hash,
+      //   description_hash: enSubmissionDescription.data.hash,
+      //   lat: location.lat,
+      //   long: location.long,
+      // });
 
       setTimeout(() => {
         setStatus("completed");
         setDescription("");
-        router.push(`/campaigns/${campaign.campaign_id}/submissions`);
+
+        if (window) {
+          window.location.href = `https://dest-network.web.app/campaigns/${campaign.campaign_id}/submissions`;
+        }
       }, 1000);
     } catch (e) {
       alert("Oooops. No success. try again.");
@@ -136,127 +150,137 @@ export const CampaignDetails: FC<{ campaign: StashCampaign }> = ({
         }
       );
     }
+  }, [campaign]);
+
+  useEffect(() => {
+    getData();
   }, []);
 
   return (
     <div className="container">
-      <Block
-        hasMaxWidth={false}
-        title={
-          <div className="flex flex-col gap-4 w-full">
-            <div className="flex gap-6 items-center">
-              <Image
-                alt="category icon"
-                height={60}
-                radius="sm"
-                src={categories[campaign.campaign_type].icon}
-                width={60}
-              />
-              <h2 className="header-text text-6xl">
-                {categories[campaign.campaign_type].name}
-              </h2>
-              <NavLink href={`/campaigns/${campaign.campaign_id}/submissions`}>
-                <Button>View campaign submissions</Button>
-              </NavLink>
-            </div>
-            <div className="flex gap-8 items-end">
-              <p className="text-4xl text-primary">
-                {campaign.reward}
-                <span className="text-2xl">{campaign.token_symbol}</span>
-              </p>
-
-              <p className="text-lg">
-                {campaign.remained_submissions} from {campaign.max_submissions}{" "}
-                rewards available
-              </p>
-
-              <Link
-                className="mb-0.5 cursor-pointer"
-                color="foreground"
-                onClick={onOpen}
-              >
-                <FaInfoCircle className="mr-2" /> Rules of submission
-              </Link>
-            </div>
-          </div>
-        }
-      >
-        <div className="flex gap-8 mt-6">
-          <article className="prose dark:prose-invert">
-            <ReactMarkdown>{campaign.description}</ReactMarkdown>
-          </article>
-
-          <div>
-            <div className="max-w-[360px] max-h-[360px] rounded-lg overflow-hidden">
-              <Map
-                ref={mapRef}
-                mapboxAccessToken={process.env.NEXT_PUBLIC_MAP_BOX_KEY}
-                style={{ width: 360, height: 360 }}
-                mapStyle="mapbox://styles/mapbox/streets-v9"
-              >
-                {location && (
-                  <Marker
-                    longitude={location.long}
-                    latitude={location.lat}
-                    anchor="bottom"
-                    draggable
-                    onDragEnd={onMarkerDragEnd}
-                  >
-                    <Pin />
-                  </Marker>
-                )}
-              </Map>
-            </div>
-            <p className="text-sm mb-2 mt-8">
-              Drag a marker on map to adjust your location
-            </p>
-            <div className="flex flex-row gap-2">
-              <Chip variant="dot" size="lg">
-                Lat {location?.lat && formatNumber(location?.lat)}
-              </Chip>
-              <Chip variant="dot" size="lg">
-                Long {location?.long && formatNumber(location?.long)}
-              </Chip>
-            </div>
-
-            <div id="#submission-form" className="flex gap-4 max-w-md">
-              <div className="w-full">
-                <div className="my-6">
-                  <CustomFileInput onFileChange={handlePhotoChange} />
-                </div>
-                <Textarea
-                  labelPlacement="outside"
-                  variant="bordered"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  label="Description"
-                  className="my-6"
+      {!campaign ? (
+        "Loading..."
+      ) : (
+        <Block
+          hasMaxWidth={false}
+          title={
+            <div className="flex flex-col gap-4 w-full">
+              <div className="flex gap-6 items-center">
+                <Image
+                  alt="category icon"
+                  height={60}
+                  radius="sm"
+                  src={categories[campaign.campaign_type].icon}
+                  width={60}
                 />
+                <h2 className="header-text text-6xl">
+                  {categories[campaign.campaign_type].name}
+                </h2>
+                <NavLink
+                  href={`/campaigns/${campaign.campaign_id}/submissions`}
+                >
+                  <Button>View campaign submissions</Button>
+                </NavLink>
+              </div>
+              <div className="flex gap-8 items-end">
+                <p className="text-4xl text-primary">
+                  {campaign.reward / Math.pow(10, 18)}
+                  <span className="text-2xl">{campaign.token_symbol}</span>
+                </p>
+
+                <p className="text-lg">
+                  {campaign.remained_submissions} from{" "}
+                  {campaign.max_submissions} rewards available
+                </p>
+
+                <Link
+                  className="mb-0.5 cursor-pointer"
+                  color="foreground"
+                  onClick={onOpen}
+                >
+                  <FaInfoCircle className="mr-2" /> Rules of submission
+                </Link>
               </div>
             </div>
+          }
+        >
+          <div className="flex gap-8 mt-6">
+            <article className="prose dark:prose-invert">
+              <ReactMarkdown>{campaign.description}</ReactMarkdown>
+            </article>
 
             <div>
-              <Button
-                isLoading={status === "progress"}
-                variant="shadow"
-                color="primary"
-                isDisabled={!isConnected}
-                disabled={!isConnected}
-                onClick={handleSubmit}
-              >
-                Submit stashing
-              </Button>
+              <div className="max-w-[360px] max-h-[360px] rounded-lg overflow-hidden">
+                <Map
+                  ref={mapRef}
+                  mapboxAccessToken={process.env.NEXT_PUBLIC_MAP_BOX_KEY}
+                  style={{ width: 360, height: 360 }}
+                  mapStyle="mapbox://styles/mapbox/streets-v9"
+                >
+                  {location && (
+                    <Marker
+                      longitude={location.long}
+                      latitude={location.lat}
+                      anchor="bottom"
+                      draggable
+                      onDragEnd={onMarkerDragEnd}
+                    >
+                      <Pin />
+                    </Marker>
+                  )}
+                </Map>
+              </div>
+              <p className="text-sm mb-2 mt-8">
+                Drag a marker on map to adjust your location
+              </p>
+              <div className="flex flex-row gap-2">
+                <Chip variant="dot" size="lg">
+                  Lat {location?.lat && formatNumber(location?.lat)}
+                </Chip>
+                <Chip variant="dot" size="lg">
+                  Long {location?.long && formatNumber(location?.long)}
+                </Chip>
+              </div>
 
-              {!isConnected && (
-                <p className="mt-2 text-danger text-sm">
-                  Please, connect your wallet before submission.
-                </p>
-              )}
-              {error?.message}
+              <div id="#submission-form" className="flex gap-4 max-w-md">
+                <div className="w-full">
+                  <div className="my-6">
+                    <CustomFileInput onFileChange={handlePhotoChange} />
+                  </div>
+                  <Textarea
+                    labelPlacement="outside"
+                    variant="bordered"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    label="Description"
+                    className="my-6"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Button
+                  isLoading={status === "progress"}
+                  variant="shadow"
+                  color="primary"
+                  isDisabled={!isConnected}
+                  disabled={!isConnected}
+                  onClick={handleSubmit}
+                >
+                  Submit stashing
+                </Button>
+
+                {!isConnected && (
+                  <p className="mt-2 text-danger text-sm">
+                    Please, connect your wallet before submission.
+                  </p>
+                )}
+                {error?.message}
+              </div>
             </div>
           </div>
-        </div>
-      </Block>
+        </Block>
+      )}
 
       <Modal size="md" isOpen={isOpen} onClose={onClose}>
         <ModalContent>
